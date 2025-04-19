@@ -24,28 +24,31 @@
 
   </nav>
 
-  <div id="popupOverlay" style="display: none;">
-  <div class="popup">
-    <span id="closePopup" class="close-btn">&times;</span>
-    <div class="tabs">
-      <button id="userTab" class="active">User</button>
-      <button id="musicianTab">Musician</button>
-    </div>
-    <h2 id="formTitle">User Login</h2>
-    <form>
-      <input type="email" placeholder="Email" required>
-      <input type="password" placeholder="Password" required>
-      
-      <div id="signupFields" style="display: none;">
-        <input type="text" placeholder="Username">
-        <input type="text" placeholder="Phone">
+  <div id="popupOverlay" class="popup-overlay">
+    <div class="popup-form">
+      <span id="closePopup" class="close-btn">&times;</span>
+      <div class="form-toggle">
+        <button id="userTab" class="active">User</button>
+        <button id="musicianTab">Musician</button>
       </div>
+      <h2 id="formTitle">User Login</h2>
+      <form>
+        <input type="text" id="nameField" placeholder="Name" style="display: none;">
+        <input type="email" id="emailField" placeholder="Email" required>
 
-      <button type="submit" class="submit-btn">Login</button>
-      <p><a href="#" id="switchMode">Sign Up</a></p>
-    </form>
+        <div id="musicianFields" style="display: none;">
+          <input type="text" id="bandNameField" placeholder="Band Name">
+          <input type="text" id="genreField" placeholder="Genre">
+        </div>
+
+        <input type="password" id="passwordField" placeholder="Password" required>
+        <input type="password" id="confirmPasswordField" placeholder="Confirm Password" style="display: none;">
+
+        <button type="submit" class="submit-btn">Login</button>
+        <p class="toggle-link"><a href="#" id="switchMode">Sign Up</a></p>
+      </form>
+    </div>
   </div>
-</div>
 
 
   <header class="hero">
