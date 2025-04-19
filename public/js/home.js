@@ -16,6 +16,7 @@ document.addEventListener('DOMContentLoaded', function () {
   const passwordField = document.getElementById('passwordField');
   const confirmPasswordField = document.getElementById('confirmPasswordField');
   const musicianFields = document.getElementById('musicianFields');
+  const form = document.getElementById('authForm');
 
   let currentMode = 'login'; // or 'signup'
   let currentType = 'User';  // or 'Musician'
@@ -64,4 +65,55 @@ document.addEventListener('DOMContentLoaded', function () {
     userTab.classList.remove('active');
     updateForm();
   };
+
+  submitBtn.addEventListener('click', function (e) {
+    e.preventDefault(); // Prevent default form submission
+
+    // Password confirmation check for signup
+    if (currentMode === 'signup' && passwordField.value !== confirmPasswordField.value) {
+      alert('The password confirmation does not match.');
+      return;
+    }
+
+    // ✅ Set correct form action URL based on mode and type
+    if (currentMode === 'signup' && currentType === 'User') {
+      form.action = '/register/user';
+    } else if (currentMode === 'signup' && currentType === 'Musician') {
+      form.action = '/register/musician';
+    } else if (currentMode === 'login' && currentType === 'User') {
+      form.action = '/login/user';
+    } else if (currentMode === 'login' && currentType === 'Musician') {
+      form.action = '/login/musician';
+    }
+
+    const formData = new FormData(form);
+    for (let pair of formData.entries()) {
+      console.log(pair[0] + ': ' + pair[1]);
+    }
+    fetch(form.action, {
+      method: 'POST',
+      body: formData,
+    })
+    .then(response => {
+      if (!response.ok) {
+        throw new Error(`HTTP error! Status: ${response.status}`);
+      }
+      return response.json();
+    })
+    .then(data => {
+      if (data.errors) {
+        alert(Object.values(data.errors).flat().join('\n'));
+      } else {
+        alert(data.message || 'Form submitted successfully!');
+        popupOverlay.style.display = 'none';
+        form.reset();
+      }
+    })
+    .catch(error => {
+      console.error('Error:', error);
+      alert('There was an error submitting the form: ' + error.message);
+    });
+  });
 });
+
+

@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\MusicController;
+use App\Http\Controllers\AuthController;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -16,4 +17,8 @@ use App\Http\Controllers\MusicController;
 
 
 Route::get('/' , [MusicController::class, 'index']);
+Route::post('/register/user', [AuthController::class, 'registerUser']);
+Route::post('/register/musician', [AuthController::class, 'registerMusician']);
+Route::post('/login/user', [AuthController::class, 'login']);
+Route::post('/login/musician', [AuthController::class, 'login']);
 
