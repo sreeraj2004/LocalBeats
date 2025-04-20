@@ -53,9 +53,22 @@ document.addEventListener('DOMContentLoaded', function () {
 
   loginBtn.onclick = () => showPopup('login');
   signupBtn.onclick = () => showPopup('signup');
+  
+  // Fix for close button functionality
   if (closePopup) {
-    closePopup.onclick = () => popupOverlay.style.display = 'none';
+    closePopup.addEventListener('click', function() {
+      popupOverlay.style.display = 'none';
+    });
+  } else {
+    console.error('Close button element not found');
   }
+  
+  // Also add click event on the overlay to close when clicking outside the form
+  popupOverlay.addEventListener('click', function(e) {
+    if (e.target === popupOverlay) {
+      popupOverlay.style.display = 'none';
+    }
+  });
 
   switchMode.onclick = (e) => {
     e.preventDefault();
@@ -307,4 +320,55 @@ document.addEventListener('DOMContentLoaded', function () {
       });
     });
   }
+
+  // Show More/Show Less functionality
+  document.addEventListener('DOMContentLoaded', function() {
+    // Music toggle functionality
+    const musicToggleBtn = document.getElementById('musicToggleBtn');
+    if (musicToggleBtn) {
+      musicToggleBtn.addEventListener('click', function() {
+        const hiddenMusicItems = document.querySelectorAll('.music-card.hidden-item');
+        if (hiddenMusicItems.length > 0) {
+          // Show all items
+          hiddenMusicItems.forEach(item => {
+            item.classList.remove('hidden-item');
+          });
+          musicToggleBtn.textContent = 'Show Less';
+        } else {
+          // Hide items beyond the first 3
+          const musicCards = document.querySelectorAll('.music-card');
+          musicCards.forEach((item, index) => {
+            if (index >= 3) {
+              item.classList.add('hidden-item');
+            }
+          });
+          musicToggleBtn.textContent = 'Show More';
+        }
+      });
+    }
+
+    // Event toggle functionality
+    const eventToggleBtn = document.getElementById('eventToggleBtn');
+    if (eventToggleBtn) {
+      eventToggleBtn.addEventListener('click', function() {
+        const hiddenEventItems = document.querySelectorAll('.event-card.hidden-item');
+        if (hiddenEventItems.length > 0) {
+          // Show all items
+          hiddenEventItems.forEach(item => {
+            item.classList.remove('hidden-item');
+          });
+          eventToggleBtn.textContent = 'Show Less';
+        } else {
+          // Hide items beyond the first 3
+          const eventCards = document.querySelectorAll('.event-card');
+          eventCards.forEach((item, index) => {
+            if (index >= 3) {
+              item.classList.add('hidden-item');
+            }
+          });
+          eventToggleBtn.textContent = 'Show More';
+        }
+      });
+    }
+  });
 });

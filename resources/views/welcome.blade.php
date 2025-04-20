@@ -122,12 +122,12 @@
   <section class="featured-music-section">
     <h2 class="section-title">Featured Musicians</h2>
     <div class="music-grid">
-    @foreach($featuredMusic as $music)
-        <div class="music-card">
+    @foreach($featuredMusic as $index => $music)
+        <div class="music-card {{ $index >= 3 ? 'hidden-item' : '' }}">
         <img src="{{ asset($music->image) }}" alt="Cover for {{ $music->artist_name }}" />
         <h3>{{ $music->artist_name }}</h3>
-        <p>Genre: {{ $music->genre }}</p> {{-- fixed typo from genr to genre --}}
-        <p>Rating: {{ $music->ratings }}/5</p> {{-- fixed rating field from rating to ratings --}}
+        <p>Genre: {{ $music->genre }}</p>
+        <p>Rating: {{ $music->ratings }}/5</p>
 
         <audio controls>
         <source src="{{ asset($music->song_path) }}" type="audio/mpeg">
@@ -136,14 +136,17 @@
         </div>
     @endforeach
     </div>
+    @if(count($featuredMusic) > 3)
+    <p class="toggle-btn" id="musicToggleBtn" style="color: blue; text-align: center; cursor: pointer; margin-top: 20px;">Show More</p>
+    @endif
     </section>
 
     <!-- upcoming events -->
     <section class="Upcoming-events">
         <h2 class="section-title">Upcoming Events</h2>
         <div class="event-grid">
-        @foreach($upcomingEvents as $event)
-            <div class="event-card">
+        @foreach($upcomingEvents as $index => $event)
+            <div class="event-card {{ $index >= 3 ? 'hidden-item' : '' }}">
                 <img src="{{ asset($event->image) }}" alt="Event Image" />
                 <h3>{{ $event->name }}</h3>                
                 <p><i class="fas fa-calendar-alt"></i> {{ $event->date }}</p>
@@ -154,6 +157,9 @@
             </div>
         @endforeach
         </div>
+        @if(count($upcomingEvents) > 3)
+        <p class="toggle-btn" id="eventToggleBtn" style="color: blue; text-align: center; cursor: pointer; margin-top: 20px;">Show More</p>
+        @endif
     </section>
 
     <!-- community section -->
