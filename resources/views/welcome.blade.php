@@ -8,6 +8,8 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
 </head>
 <body>
+
+    <!-- navbar -->
   <nav class="navbar">
     <div class="logo"><img class="logo-img" src="{{ asset('images/logo.webp') }}" alt="LocalBeats Logo">  LocalBeats</div>
     
@@ -20,10 +22,12 @@
     <div class="auth-buttons">
         <button id="loginBtn" class="login-btn">Log In</button>
         <button id="signupBtn" class="signup-btn">Sign Up</button>
+        <button id="dashboardBtn" class="dashboard-btn" style="display: none;">Dashboard</button>
     </div>
 
   </nav>
 
+  <!-- login and signup -->
   <div id="popupOverlay" class="popup-overlay">
     <div class="popup-form">
         <span id="closePopup" class="close-btn">&times;</span>
@@ -50,9 +54,19 @@
             <p class="toggle-link"><a href="#" id="switchMode">Sign Up</a></p>
         </form>
 
+        </div>
     </div>
-</div>
 
+    <!-- dashboard -->
+    <div id="dashboardPanel">
+        <button id="closeDashboard">✖</button>
+        <p>Welcome</p>
+        <button id="logoutBtn">Logout</button>
+    </div>
+
+    
+
+    <!-- hero section -->
   <header class="hero">
     <h1>Connect with Local Musicians</h1>
     <p>Discover talented artists in your area, attend local events, and explore unique albums from independent musicians.</p>
@@ -68,7 +82,7 @@
     @foreach($featuredMusic as $music)
         <div class="music-card">
         <img src="{{ asset($music->image) }}" alt="Cover for {{ $music->artist_name }}" />
-
+        <h3>{{ $music->artist_name }}</h3>
         <p>Genre: {{ $music->genre }}</p> {{-- fixed typo from genr to genre --}}
         <p>Rating: {{ $music->ratings }}/5</p> {{-- fixed rating field from rating to ratings --}}
 
@@ -81,6 +95,7 @@
     </div>
     </section>
 
+    <!-- upcoming events -->
     <section class="Upcoming-events">
         <h2 class="section-title">Upcoming Events</h2>
         <div class="event-grid">
@@ -98,12 +113,14 @@
         </div>
     </section>
 
+    <!-- community section -->
     <div class="community-section">
         <h2>Join Our Community</h2>
         <p>Are you a musician looking to connect with fans? Or a music lover wanting to discover local talent?</p>
         <button>Sign Up for Free</button>
     </div>
 
+    <!-- footer -->
     <footer class="footer">
         <div class="footer-logo">
             <div class="logo-container"><img class="logo-img" src="{{ asset('images/logo.webp') }}" alt="LocalBeats Logo"><h2>LocalBeats</h2></div>

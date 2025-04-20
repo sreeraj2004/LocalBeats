@@ -18,8 +18,13 @@ document.addEventListener('DOMContentLoaded', function () {
   const musicianFields = document.getElementById('musicianFields');
   const form = document.getElementById('authForm');
 
-  let currentMode = 'login'; // or 'signup'
-  let currentType = 'User';  // or 'Musician'
+  const dashboardBtn = document.getElementById('dashboardBtn');
+  const dashboardPanel = document.getElementById('dashboardPanel');
+  const closeDashboard = document.getElementById('closeDashboard');
+  const logoutBtn = document.getElementById('logoutBtn'); // 👈 your logout button inside dashboard
+
+  let currentMode = 'login';
+  let currentType = 'User';
 
   function showPopup(mode) {
     currentMode = mode;
@@ -67,15 +72,13 @@ document.addEventListener('DOMContentLoaded', function () {
   };
 
   submitBtn.addEventListener('click', function (e) {
-    e.preventDefault(); // Prevent default form submission
+    e.preventDefault();
 
-    // Password confirmation check for signup
     if (currentMode === 'signup' && passwordField.value !== confirmPasswordField.value) {
       alert('The password confirmation does not match.');
       return;
     }
 
-    // ✅ Set correct form action URL based on mode and type
     if (currentMode === 'signup' && currentType === 'User') {
       form.action = '/register/user';
     } else if (currentMode === 'signup' && currentType === 'Musician') {
@@ -87,9 +90,7 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     const formData = new FormData(form);
-    for (let pair of formData.entries()) {
-      console.log(pair[0] + ': ' + pair[1]);
-    }
+
     fetch(form.action, {
       method: 'POST',
       body: formData,
@@ -107,6 +108,13 @@ document.addEventListener('DOMContentLoaded', function () {
         alert(data.message || 'Form submitted successfully!');
         popupOverlay.style.display = 'none';
         form.reset();
+
+        loginBtn.style.display = 'none';
+        signupBtn.style.display = 'none';
+        dashboardBtn.style.display = 'inline-block';
+
+        sessionStorage.setItem('userType', currentType);
+        sessionStorage.setItem('userName', data.user?.name || '');
       }
     })
     .catch(error => {
@@ -114,6 +122,22 @@ document.addEventListener('DOMContentLoaded', function () {
       alert('There was an error submitting the form: ' + error.message);
     });
   });
+
+  dashboardBtn.onclick = () => {
+    dashboardPanel.classList.add('active');
+  };
+
+  closeDashboard.onclick = () => {
+    dashboardPanel.classList.remove('active');
+  };
+
+  // ✅ Logout Button Functionality
+  logoutBtn.onclick = () => {
+    dashboardPanel.classList.remove('active');
+    dashboardBtn.style.display = 'none';
+    loginBtn.style.display = 'inline-block';
+    signupBtn.style.display = 'inline-block';
+    sessionStorage.clear();
+    alert('You have been logged out.');
+  };
 });
-
-
