@@ -21,7 +21,9 @@ document.addEventListener('DOMContentLoaded', function () {
   const dashboardBtn = document.getElementById('dashboardBtn');
   const dashboardPanel = document.getElementById('dashboardPanel');
   const closeDashboard = document.getElementById('closeDashboard');
-  const logoutBtn = document.getElementById('logoutBtn'); // 👈 your logout button inside dashboard
+  const logoutBtn = document.getElementById('logoutBtn');
+  const addEventBtn = document.getElementById('addEventBtn');
+  const addMusicBtn = document.getElementById('addMusicBtn');
 
   let currentMode = 'login';
   let currentType = 'User';
@@ -102,8 +104,8 @@ document.addEventListener('DOMContentLoaded', function () {
       return response.json();
     })
     .then(data => {
-      if (data.errors) {
-        alert(Object.values(data.errors).flat().join('\n'));
+      if (data.errors || data.error) {
+        alert(Object.values(data.errors || data.error).flat().join('\n'));
       } else {
         alert(data.message || 'Form submitted successfully!');
         popupOverlay.style.display = 'none';
@@ -115,6 +117,15 @@ document.addEventListener('DOMContentLoaded', function () {
 
         sessionStorage.setItem('userType', currentType);
         sessionStorage.setItem('userName', data.user?.name || '');
+
+        // Show dashboard buttons based on user type
+        if (currentType === 'Musician') {
+          addEventBtn.style.display = 'block';
+          addMusicBtn.style.display = 'block';
+        } else {
+          addEventBtn.style.display = 'none';
+          addMusicBtn.style.display = 'none';
+        }
       }
     })
     .catch(error => {
@@ -125,13 +136,21 @@ document.addEventListener('DOMContentLoaded', function () {
 
   dashboardBtn.onclick = () => {
     dashboardPanel.classList.add('active');
+
+    const storedType = sessionStorage.getItem('userType');
+    if (storedType === 'Musician') {
+      addEventBtn.style.display = 'block';
+      addMusicBtn.style.display = 'block';
+    } else {
+      addEventBtn.style.display = 'none';
+      addMusicBtn.style.display = 'none';
+    }
   };
 
   closeDashboard.onclick = () => {
     dashboardPanel.classList.remove('active');
   };
 
-  // ✅ Logout Button Functionality
   logoutBtn.onclick = () => {
     dashboardPanel.classList.remove('active');
     dashboardBtn.style.display = 'none';
