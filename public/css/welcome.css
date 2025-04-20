@@ -119,6 +119,7 @@
 .featured-music-section {
     max-width: 1200px;
     margin: auto;
+    padding: 0 15px;
   }
   
   .section-title {
@@ -131,7 +132,7 @@
   
   .music-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    grid-template-columns: repeat(3, 1fr);
     gap: 20px;
   }
   
@@ -170,15 +171,15 @@
   }
 
   .Upcoming-events{
-    
     max-width: 1200px;
     margin-bottom: 50px;
     margin: auto;
+    padding: 0 15px;
   }
 
   .event-grid{
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    grid-template-columns: repeat(3, 1fr);
     gap: 20px;
   }
 
@@ -219,6 +220,14 @@
   .event-btn:hover{
     background-color: #1877f2;
   }
+
+  /* Responsive styles for all screen sizes */
+  @media (max-width: 900px) {
+    .music-grid, .event-grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+
   @media (max-width: 600px) {
     body {
       padding: 10px;
@@ -226,7 +235,14 @@
     .section-title {
       font-size: 1.5rem;
     }
+    .music-grid, .event-grid {
+      grid-template-columns: 1fr;
+    }
+    .music-card img, .event-card img {
+      height: 180px;
+    }
   }
+
 /* Community Section */
 .community-section {
     margin-top: 100px;

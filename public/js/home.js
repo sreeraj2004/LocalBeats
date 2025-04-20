@@ -381,4 +381,32 @@ document.addEventListener('DOMContentLoaded', function() {
   } else {
     console.log('Event toggle button not found');
   }
+  
+  // Single audio player functionality
+  let currentlyPlayingAudio = null;
+  
+  // Get all audio elements on the page
+  const allAudioElements = document.querySelectorAll('audio');
+  
+  // Add event listeners to all audio elements
+  allAudioElements.forEach(audio => {
+    // When play is clicked
+    audio.addEventListener('play', function() {
+      // If there's already an audio playing and it's not this one
+      if (currentlyPlayingAudio && currentlyPlayingAudio !== audio) {
+        // Pause the currently playing audio
+        currentlyPlayingAudio.pause();
+        currentlyPlayingAudio.currentTime = 0;
+      }
+      
+      // Set this audio as the currently playing one
+      currentlyPlayingAudio = audio;
+    });
+    
+    // When audio ends naturally
+    audio.addEventListener('ended', function() {
+      // Clear the currently playing audio reference
+      currentlyPlayingAudio = null;
+    });
+  });
 });
