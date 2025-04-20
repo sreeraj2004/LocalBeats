@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\MusicController;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\UploadController;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -21,4 +22,6 @@ Route::post('/register/user', [AuthController::class, 'registerUser']);
 Route::post('/register/musician', [AuthController::class, 'registerMusician']);
 Route::post('/login/user', [AuthController::class, 'login']);
 Route::post('/login/musician', [AuthController::class, 'login']);
+Route::post('/upload-music', [UploadController::class, 'uploadMusic']);
+Route::post('/upload-event', [UploadController::class, 'uploadEvent']);
 

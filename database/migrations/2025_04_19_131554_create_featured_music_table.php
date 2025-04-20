@@ -15,6 +15,11 @@ return new class extends Migration
     {
         Schema::create('featured_music', function (Blueprint $table) {
             $table->id();
+            $table->string('image');
+            $table->string('artist_name');
+            $table->string('genre');
+            $table->decimal('ratings', 3, 1);
+            $table->string('song_path');
             $table->timestamps();
         });
     }

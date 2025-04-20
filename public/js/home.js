@@ -100,9 +100,21 @@ document.addEventListener('DOMContentLoaded', function () {
     fetch(form.action, {
       method: 'POST',
       body: formData,
+      headers: {
+        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
+        'Accept': 'application/json'
+      }
     })
       .then(response => {
-        if (!response.ok) throw new Error(`HTTP error! Status: ${response.status}`);
+        const contentType = response.headers.get('content-type');
+        if (!contentType || !contentType.includes('application/json')) {
+          throw new Error('Server returned non-JSON response. Please try again or contact support.');
+        }
+        if (!response.ok) {
+          return response.json().then(data => {
+            throw new Error(data.error || 'Network response was not ok');
+          });
+        }
         return response.json();
       })
       .then(data => {
@@ -119,8 +131,8 @@ document.addEventListener('DOMContentLoaded', function () {
 
           sessionStorage.setItem('userType', currentType);
           sessionStorage.setItem('userName', data.user?.name || '');
-
-          if (currentType === 'Musician') {
+          if (data.isMusician) {
+            sessionStorage.setItem('musicianId', data.musician?.id || '');
             addEventBtn.style.display = 'block';
             addMusicBtn.style.display = 'block';
           } else {
@@ -188,4 +200,111 @@ document.addEventListener('DOMContentLoaded', function () {
       document.body.classList.remove('blurred');
     }
   });
+
+  // Add event listeners for music and event forms
+  if (musicForm) {
+    musicForm.addEventListener('submit', function(e) {
+      e.preventDefault();
+      
+      const formData = new FormData(musicForm);
+      
+      // Log form data for debugging
+      console.log('Submitting music form with data:');
+      for (let pair of formData.entries()) {
+        console.log(pair[0] + ': ' + pair[1]);
+      }
+      
+      fetch('/upload-music', {
+        method: 'POST',
+        body: formData,
+        headers: {
+          'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
+          'Accept': 'application/json'
+        }
+      })
+      .then(response => {
+        console.log('Response status:', response.status);
+        const contentType = response.headers.get('content-type');
+        if (!contentType || !contentType.includes('application/json')) {
+          throw new Error('Server returned non-JSON response. Please try again or contact support.');
+        }
+        if (!response.ok) {
+          return response.json().then(data => {
+            throw new Error(data.message || 'Network response was not ok');
+          });
+        }
+        return response.json();
+      })
+      .then(data => {
+        console.log('Success response:', data);
+        if (data.success) {
+          alert('Music uploaded successfully!');
+          musicFormPopup.style.display = 'none';
+          document.body.classList.remove('blurred');
+          musicForm.reset();
+          // Optionally refresh the page to show the new music
+          window.location.reload();
+        } else {
+          throw new Error(data.message || 'Upload failed');
+        }
+      })
+      .catch(error => {
+        console.error('Error:', error);
+        alert('There was an error uploading the music: ' + error.message);
+      });
+    });
+  }
+
+  if (eventForm) {
+    eventForm.addEventListener('submit', function(e) {
+      e.preventDefault();
+      
+      const formData = new FormData(eventForm);
+      
+      // Log form data for debugging
+      console.log('Submitting event form with data:');
+      for (let pair of formData.entries()) {
+        console.log(pair[0] + ': ' + pair[1]);
+      }
+      
+      fetch('/upload-event', {
+        method: 'POST',
+        body: formData,
+        headers: {
+          'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
+          'Accept': 'application/json'
+        }
+      })
+      .then(response => {
+        console.log('Response status:', response.status);
+        const contentType = response.headers.get('content-type');
+        if (!contentType || !contentType.includes('application/json')) {
+          throw new Error('Server returned non-JSON response. Please try again or contact support.');
+        }
+        if (!response.ok) {
+          return response.json().then(data => {
+            throw new Error(data.message || 'Network response was not ok');
+          });
+        }
+        return response.json();
+      })
+      .then(data => {
+        console.log('Success response:', data);
+        if (data.success) {
+          alert('Event added successfully!');
+          eventFormPopup.style.display = 'none';
+          document.body.classList.remove('blurred');
+          eventForm.reset();
+          // Optionally refresh the page to show the new event
+          window.location.reload();
+        } else {
+          throw new Error(data.message || 'Upload failed');
+        }
+      })
+      .catch(error => {
+        console.error('Error:', error);
+        alert('There was an error adding the event: ' + error.message);
+      });
+    });
+  }
 });

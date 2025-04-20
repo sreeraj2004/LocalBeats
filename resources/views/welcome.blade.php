@@ -3,6 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="csrf-token" content="{{ csrf_token() }}">
   <title>LocalBeats</title>
   <link rel='stylesheet' href='{{url("css/welcome.css")}}'>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
@@ -73,37 +74,39 @@
 
      
     <!-- Add Event Form Popup -->
-<!-- Add Event Form Popup -->
-<div id="eventFormPopup" class="unique-popup-overlay">
-    <div class="unique-popup-form">
-        <span class="unique-close-btn" onclick="document.getElementById('eventFormPopup').style.display='none'">&times;</span>
-        <h2>Add Event</h2>
-        <form id="eventForm" class="unique-popup-form">
-            <input type="text" placeholder="Event Name" required />
-            <input type="date" required />
-            <input type="text" placeholder="Location" required />
-            <input type="time" required />
-            <input type="number" placeholder="Price" required />
-            <button type="submit">Submit</button>
-        </form>
+    <div id="eventFormPopup" class="unique-popup-overlay">
+        <div class="unique-popup-form">
+            <span class="unique-close-btn" onclick="document.getElementById('eventFormPopup').style.display='none'">&times;</span>
+            <h2>Add Event</h2>
+            @csrf
+            <form id="eventForm" class="unique-popup-form" enctype="multipart/form-data" method="POST" action="/upload-event">
+                <input type="file" accept="image/*" name="image" required />
+                <input type="text" placeholder="Event Name" name="name" required />
+                <input type="date" name="date" required />
+                <input type="text" placeholder="Location" name="location" required />
+                <input type="time" name="time" required />
+                <input type="number" placeholder="Price" name="price" required />
+                <button type="submit">Submit</button>
+            </form>
+        </div>
     </div>
-</div>
 
-<!-- Add Music Form Popup -->
-<div id="musicFormPopup" class="unique-popup-overlay">
-    <div class="unique-popup-form">
-        <span class="unique-close-btn" onclick="document.getElementById('musicFormPopup').style.display='none'">&times;</span>
-        <h2>Add Music</h2>
-        <form id="musicForm" class="unique-popup-form">
-            <input type="file" accept="image/*" required />
-            <input type="text" placeholder="Song Name" required />
-            <input type="text" placeholder="Genre" required />
-            <input type="number" placeholder="Rating" required />
-            <input type="file" accept="audio/*" required />
-            <button type="submit">Submit</button>
-        </form>
+    <!-- Add Music Form Popup -->
+    <div id="musicFormPopup" class="unique-popup-overlay">
+        <div class="unique-popup-form">
+            <span class="unique-close-btn" onclick="document.getElementById('musicFormPopup').style.display='none'">&times;</span>
+            <h2>Add Music</h2>
+            @csrf
+            <form id="musicForm" class="unique-popup-form" enctype="multipart/form-data" method="POST" action="/upload-music">
+                <input type="file" accept="image/*" name="image" required />
+                <input type="text" placeholder="Artist Name" name="artist_name" required />
+                <input type="text" placeholder="Genre" name="genre" required />
+                <input type="number" placeholder="Rating" name="ratings" required />
+                <input type="file" accept="audio/*" name="song" required />
+                <button type="submit">Submit</button>
+            </form>
+        </div>
     </div>
-</div>
 
 
     <!-- hero section -->

@@ -8,4 +8,12 @@ use Illuminate\Database\Eloquent\Model;
 class UpComingEvents extends Model
 {
     protected $table = 'upcoming_events';
+    protected $fillable = [
+        'image',
+        'name',
+        'date',
+        'location',
+        'time',
+        'price',
+    ];
 }
