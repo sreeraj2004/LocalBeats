@@ -320,55 +320,65 @@ document.addEventListener('DOMContentLoaded', function () {
       });
     });
   }
+});
 
-  // Show More/Show Less functionality
-  document.addEventListener('DOMContentLoaded', function() {
-    // Music toggle functionality
-    const musicToggleBtn = document.getElementById('musicToggleBtn');
-    if (musicToggleBtn) {
-      musicToggleBtn.addEventListener('click', function() {
-        const hiddenMusicItems = document.querySelectorAll('.music-card.hidden-item');
-        if (hiddenMusicItems.length > 0) {
-          // Show all items
-          hiddenMusicItems.forEach(item => {
-            item.classList.remove('hidden-item');
-          });
-          musicToggleBtn.textContent = 'Show Less';
-        } else {
-          // Hide items beyond the first 3
-          const musicCards = document.querySelectorAll('.music-card');
-          musicCards.forEach((item, index) => {
-            if (index >= 3) {
-              item.classList.add('hidden-item');
-            }
-          });
-          musicToggleBtn.textContent = 'Show More';
-        }
-      });
-    }
+// Show More/Show Less functionality - moved outside the nested DOMContentLoaded
+document.addEventListener('DOMContentLoaded', function() {
+  console.log('Initializing Show More/Less functionality');
+  
+  // Music toggle functionality
+  const musicToggleBtn = document.getElementById('musicToggleBtn');
+  if (musicToggleBtn) {
+    console.log('Music toggle button found');
+    musicToggleBtn.addEventListener('click', function() {
+      console.log('Music toggle button clicked');
+      const hiddenMusicItems = document.querySelectorAll('.music-card.hidden-item');
+      if (hiddenMusicItems.length > 0) {
+        // Show all items
+        hiddenMusicItems.forEach(item => {
+          item.classList.remove('hidden-item');
+        });
+        musicToggleBtn.textContent = 'Show Less';
+      } else {
+        // Hide items beyond the first 3
+        const musicCards = document.querySelectorAll('.music-card');
+        musicCards.forEach((item, index) => {
+          if (index >= 3) {
+            item.classList.add('hidden-item');
+          }
+        });
+        musicToggleBtn.textContent = 'Show More';
+      }
+    });
+  } else {
+    console.log('Music toggle button not found');
+  }
 
-    // Event toggle functionality
-    const eventToggleBtn = document.getElementById('eventToggleBtn');
-    if (eventToggleBtn) {
-      eventToggleBtn.addEventListener('click', function() {
-        const hiddenEventItems = document.querySelectorAll('.event-card.hidden-item');
-        if (hiddenEventItems.length > 0) {
-          // Show all items
-          hiddenEventItems.forEach(item => {
-            item.classList.remove('hidden-item');
-          });
-          eventToggleBtn.textContent = 'Show Less';
-        } else {
-          // Hide items beyond the first 3
-          const eventCards = document.querySelectorAll('.event-card');
-          eventCards.forEach((item, index) => {
-            if (index >= 3) {
-              item.classList.add('hidden-item');
-            }
-          });
-          eventToggleBtn.textContent = 'Show More';
-        }
-      });
-    }
-  });
+  // Event toggle functionality
+  const eventToggleBtn = document.getElementById('eventToggleBtn');
+  if (eventToggleBtn) {
+    console.log('Event toggle button found');
+    eventToggleBtn.addEventListener('click', function() {
+      console.log('Event toggle button clicked');
+      const hiddenEventItems = document.querySelectorAll('.event-card.hidden-item');
+      if (hiddenEventItems.length > 0) {
+        // Show all items
+        hiddenEventItems.forEach(item => {
+          item.classList.remove('hidden-item');
+        });
+        eventToggleBtn.textContent = 'Show Less';
+      } else {
+        // Hide items beyond the first 3
+        const eventCards = document.querySelectorAll('.event-card');
+        eventCards.forEach((item, index) => {
+          if (index >= 3) {
+            item.classList.add('hidden-item');
+          }
+        });
+        eventToggleBtn.textContent = 'Show More';
+      }
+    });
+  } else {
+    console.log('Event toggle button not found');
+  }
 });
