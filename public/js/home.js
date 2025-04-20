@@ -25,6 +25,12 @@ document.addEventListener('DOMContentLoaded', function () {
   const addEventBtn = document.getElementById('addEventBtn');
   const addMusicBtn = document.getElementById('addMusicBtn');
 
+  const eventForm = document.getElementById('eventForm');
+  const musicForm = document.getElementById('musicForm');
+
+  const eventFormPopup = document.getElementById('eventFormPopup');
+  const musicFormPopup = document.getElementById('musicFormPopup');
+
   let currentMode = 'login';
   let currentType = 'User';
 
@@ -98,9 +104,7 @@ document.addEventListener('DOMContentLoaded', function () {
       body: formData,
     })
     .then(response => {
-      if (!response.ok) {
-        throw new Error(`HTTP error! Status: ${response.status}`);
-      }
+      if (!response.ok) throw new Error(`HTTP error! Status: ${response.status}`);
       return response.json();
     })
     .then(data => {
@@ -118,7 +122,6 @@ document.addEventListener('DOMContentLoaded', function () {
         sessionStorage.setItem('userType', currentType);
         sessionStorage.setItem('userName', data.user?.name || '');
 
-        // Show dashboard buttons based on user type
         if (currentType === 'Musician') {
           addEventBtn.style.display = 'block';
           addMusicBtn.style.display = 'block';
@@ -149,6 +152,8 @@ document.addEventListener('DOMContentLoaded', function () {
 
   closeDashboard.onclick = () => {
     dashboardPanel.classList.remove('active');
+    eventForm.classList.add('hidden');
+    musicForm.classList.add('hidden');
   };
 
   logoutBtn.onclick = () => {
@@ -158,5 +163,25 @@ document.addEventListener('DOMContentLoaded', function () {
     signupBtn.style.display = 'inline-block';
     sessionStorage.clear();
     alert('You have been logged out.');
+  };
+
+  // Show forms on button clicks
+  addEventBtn.onclick = () => {
+    eventFormPopup.style.display = 'flex';
+    musicFormPopup.style.display = 'none';
+  };
+
+  addMusicBtn.onclick = () => {
+    musicFormPopup.style.display = 'flex';
+    eventFormPopup.style.display = 'none';
+  };
+
+  // Close popup on overlay click
+  popupOverlay.onclick = (e) => {
+    if (e.target === popupOverlay) {
+      eventFormPopup.style.display = 'none';
+      musicFormPopup.style.display = 'none';
+      popupOverlay.style.display = 'none';
+    }
   };
 });

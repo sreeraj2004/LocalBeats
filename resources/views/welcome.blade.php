@@ -57,7 +57,7 @@
         </div>
     </div>
 
-    <!-- dashboard -->
+    
     <!-- dashboard -->
     <div id="dashboardPanel">
         <button id="closeDashboard">✖</button>
@@ -70,9 +70,38 @@
         <button id="logoutBtn">Logout</button>
     </div>
 
-    
-    
+     
+    <!-- Add Event Form -->
+<div id="popupOverlay" class="popup-overlay">
+    <div class="popup-form">
+        <span class="close-btn" onclick="closePopup('eventFormPopup')">&times;</span>
+        <h2 id="formTitle">Add Event</h2>
+        <form id="eventForm" class="popup-form">
+            <input type="text" placeholder="Event Name" required />
+            <input type="date" required />
+            <input type="text" placeholder="Location" required />
+            <input type="time" required />
+            <input type="number" placeholder="Price" required />
+            <button type="submit">Submit</button>
+        </form>
+    </div>
+</div>
 
+<!-- Music Form Popup -->
+<div id="popupOverlay" class="popup-overlay">
+    <div class="popup-form">
+        <span class="close-btn" onclick="closePopup('musicFormPopup')">&times;</span>
+        <h2 id="formTitle">Add Music</h2>
+        <form id="musicForm" class="popup-form">
+            <input type="file" accept="image/*" required />
+            <input type="text" placeholder="Song Name" required />
+            <input type="text" placeholder="Genre" required />
+            <input type="number" placeholder="Rating" required />
+            <input type="file" accept="audio/*" required />
+            <button type="submit">Submit</button>
+        </form>
+    </div>
+</div>
     <!-- hero section -->
   <header class="hero">
     <h1>Connect with Local Musicians</h1>
