@@ -633,208 +633,87 @@
     background-color: #cf7c00;
   }
 
-  /* General styling for the dashboard panel */
-#uniqueDashboardPanel {
-  display: none;
-  position: fixed;
-  top: 0;
-  right: 0;
-  width: 300px;
-  background-color: #f8f9fa;
-  padding: 20px;
-  box-shadow: -2px 0 10px rgba(0, 0, 0, 0.1);
-}
-
-#uniqueCloseDashboard {
-  font-size: 1.5rem;
-  color: #333;
-  border: none;
-  background: none;
-  cursor: pointer;
-}
-
-.uniqueDashboardBtn {
-  padding: 10px;
-  margin: 10px 0;
-  background-color: #007bff;
-  color: white;
-  border: none;
-  cursor: pointer;
-  border-radius: 5px;
-  width: 100%;
-}
-
-.uniqueDashboardBtn:hover {
-  background-color: #0056b3;
-}
-
-/* Pop-up overlay for forms */
-.uniquePopupOverlay {
-  display: none;
+  /* Popup background blur overlay */
+.unique-popup-overlay {
   position: fixed;
   top: 0;
   left: 0;
   width: 100%;
   height: 100%;
-  background: rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(5px);
+  background: rgba(0, 0, 0, 0.4);
+  display: none;
   justify-content: center;
   align-items: center;
+  z-index: 1000;
 }
 
-.uniquePopupForm {
-  background: white;
-  padding: 20px;
-  border-radius: 5px;
-  max-width: 500px;
+/* Centered popup form container */
+.unique-popup-form {
+  background-color: #ffffff;
+  padding: 30px 40px;
+  border-radius: 16px;
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+  max-width: 400px;
+  width: 90%;
+  position: relative;
+  animation: fadeIn 0.3s ease;
+}
+
+/* Form inputs and button */
+.unique-popup-form input,
+.unique-popup-form button {
+  display: block;
   width: 100%;
+  padding: 10px 14px;
+  margin: 12px 0;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  font-size: 14px;
+  outline: none;
 }
 
-.uniqueCloseBtn {
-  font-size: 2rem;
-  color: #333;
+.unique-popup-form input:focus {
+  border-color: #6a5acd;
+  box-shadow: 0 0 5px rgba(106, 90, 205, 0.4);
+}
+
+.unique-popup-form button {
+  background-color: #6a5acd;
+  color: white;
+  font-weight: bold;
+  border: none;
   cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.unique-popup-form button:hover {
+  background-color: #5a4bbf;
+}
+
+/* Close button styling */
+.unique-close-btn {
   position: absolute;
   top: 10px;
-  right: 10px;
-}
-
-#uniqueFormTitle {
-  font-size: 1.5rem;
-  margin-bottom: 20px;
-}
-
-.uniquePopupForm input {
-  width: 100%;
-  padding: 10px;
-  margin: 10px 0;
-  border: 1px solid #ccc;
-  border-radius: 5px;
-}
-
-.uniquePopupForm button {
-  padding: 10px 20px;
-  background-color: #007bff;
-  color: white;
-  border: none;
+  right: 14px;
+  font-size: 22px;
   cursor: pointer;
-  border-radius: 5px;
-  width: 100%;
+  color: #888;
+  transition: color 0.3s;
 }
 
-.uniquePopupForm button:hover {
-  background-color: #0056b3;
+.unique-close-btn:hover {
+  color: #000;
 }
 
-/* Styling for tabs (User and Musician) */
-#uniqueUserTab,
-#uniqueMusicianTab {
-  padding: 10px;
-  cursor: pointer;
-  border: 1px solid #ccc;
-  border-radius: 5px;
-  margin: 5px;
-  background-color: #f1f1f1;
-}
-
-#uniqueUserTab.active,
-#uniqueMusicianTab.active {
-  background-color: #007bff;
-  color: white;
-}
-
-#uniqueMusicianTab {
-  display: none;
-}
-
-/* Form fields */
-#uniqueNameField,
-#uniqueEmailField,
-#uniqueBandNameField,
-#uniqueGenreField,
-#uniquePasswordField,
-#uniqueConfirmPasswordField {
-  display: block;
-}
-
-/* Dashboard section for logged-in user */
-#uniqueDashboardBtn {
-  display: none;
-}
-
-#uniqueLogoutBtn {
-  display: block;
-  padding: 10px;
-  background-color: #dc3545;
-  color: white;
-  border: none;
-  cursor: pointer;
-  width: 100%;
-  border-radius: 5px;
-}
-
-#uniqueLogoutBtn:hover {
-  background-color: #c82333;
-}
-
-/* Form to add event and music */
-#uniqueAddEventBtn,
-#uniqueAddMusicBtn {
-  display: none;
-}
-
-#uniqueEventFormPopup,
-#uniqueMusicFormPopup {
-  display: none;
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: rgba(0, 0, 0, 0.5);
-  justify-content: center;
-  align-items: center;
-}
-
-#uniqueEventFormPopup,
-#uniqueMusicFormPopup {
-  display: none;
-}
-
-#uniqueEventForm,
-#uniqueMusicForm {
-  display: flex;
-  flex-direction: column;
-}
-
-#uniqueEventForm input,
-#uniqueMusicForm input {
-  margin-bottom: 10px;
-}
-
-#uniqueAddEventBtn,
-#uniqueAddMusicBtn {
-  padding: 10px;
-  margin: 10px 0;
-  background-color: #28a745;
-  color: white;
-  border: none;
-  cursor: pointer;
-  border-radius: 5px;
-  width: 100%;
-}
-
-#uniqueAddEventBtn:hover,
-#uniqueAddMusicBtn:hover {
-  background-color: #218838;
-}
-
-/* Responsive handling for smaller screens */
-@media (max-width: 768px) {
-  #uniqueDashboardPanel {
-    width: 100%;
+/* Smooth popup animation */
+@keyframes fadeIn {
+  from {
+      opacity: 0;
+      transform: scale(0.95);
   }
-
-  .uniqueDashboardBtn {
-    width: auto;
+  to {
+      opacity: 1;
+      transform: scale(1);
   }
 }

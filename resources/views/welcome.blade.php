@@ -73,11 +73,12 @@
 
      
     <!-- Add Event Form Popup -->
-<div id="eventFormPopup" class="popup-overlay">
-    <div class="popup-form">
-        <span class="close-btn" onclick="document.getElementById('eventFormPopup').style.display='none'">&times;</span>
+<!-- Add Event Form Popup -->
+<div id="eventFormPopup" class="unique-popup-overlay">
+    <div class="unique-popup-form">
+        <span class="unique-close-btn" onclick="document.getElementById('eventFormPopup').style.display='none'">&times;</span>
         <h2>Add Event</h2>
-        <form id="eventForm" class="popup-form">
+        <form id="eventForm" class="unique-popup-form">
             <input type="text" placeholder="Event Name" required />
             <input type="date" required />
             <input type="text" placeholder="Location" required />
@@ -89,11 +90,11 @@
 </div>
 
 <!-- Add Music Form Popup -->
-<div id="musicFormPopup" class="popup-overlay">
-    <div class="popup-form">
-        <span class="close-btn" onclick="document.getElementById('musicFormPopup').style.display='none'">&times;</span>
+<div id="musicFormPopup" class="unique-popup-overlay">
+    <div class="unique-popup-form">
+        <span class="unique-close-btn" onclick="document.getElementById('musicFormPopup').style.display='none'">&times;</span>
         <h2>Add Music</h2>
-        <form id="musicForm" class="popup-form">
+        <form id="musicForm" class="unique-popup-form">
             <input type="file" accept="image/*" required />
             <input type="text" placeholder="Song Name" required />
             <input type="text" placeholder="Genre" required />
@@ -103,6 +104,7 @@
         </form>
     </div>
 </div>
+
 
     <!-- hero section -->
   <header class="hero">
