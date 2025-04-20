@@ -48,16 +48,14 @@ document.addEventListener('DOMContentLoaded', function () {
     nameField.style.display = currentMode === 'signup' ? 'block' : 'none';
     confirmPasswordField.style.display = currentMode === 'signup' ? 'block' : 'none';
 
-    if (currentMode === 'signup' && currentType === 'Musician') {
-      musicianFields.style.display = 'block';
-    } else {
-      musicianFields.style.display = 'none';
-    }
+    musicianFields.style.display = (currentMode === 'signup' && currentType === 'Musician') ? 'block' : 'none';
   }
 
   loginBtn.onclick = () => showPopup('login');
   signupBtn.onclick = () => showPopup('signup');
-  closePopup.onclick = () => popupOverlay.style.display = 'none';
+  if (closePopup) {
+    closePopup.onclick = () => popupOverlay.style.display = 'none';
+  }
 
   switchMode.onclick = (e) => {
     e.preventDefault();
@@ -103,38 +101,38 @@ document.addEventListener('DOMContentLoaded', function () {
       method: 'POST',
       body: formData,
     })
-    .then(response => {
-      if (!response.ok) throw new Error(`HTTP error! Status: ${response.status}`);
-      return response.json();
-    })
-    .then(data => {
-      if (data.errors || data.error) {
-        alert(Object.values(data.errors || data.error).flat().join('\n'));
-      } else {
-        alert(data.message || 'Form submitted successfully!');
-        popupOverlay.style.display = 'none';
-        form.reset();
-
-        loginBtn.style.display = 'none';
-        signupBtn.style.display = 'none';
-        dashboardBtn.style.display = 'inline-block';
-
-        sessionStorage.setItem('userType', currentType);
-        sessionStorage.setItem('userName', data.user?.name || '');
-
-        if (currentType === 'Musician') {
-          addEventBtn.style.display = 'block';
-          addMusicBtn.style.display = 'block';
+      .then(response => {
+        if (!response.ok) throw new Error(`HTTP error! Status: ${response.status}`);
+        return response.json();
+      })
+      .then(data => {
+        if (data.errors || data.error) {
+          alert(Object.values(data.errors || data.error).flat().join('\n'));
         } else {
-          addEventBtn.style.display = 'none';
-          addMusicBtn.style.display = 'none';
+          alert(data.message || 'Form submitted successfully!');
+          popupOverlay.style.display = 'none';
+          form.reset();
+
+          loginBtn.style.display = 'none';
+          signupBtn.style.display = 'none';
+          dashboardBtn.style.display = 'inline-block';
+
+          sessionStorage.setItem('userType', currentType);
+          sessionStorage.setItem('userName', data.user?.name || '');
+
+          if (currentType === 'Musician') {
+            addEventBtn.style.display = 'block';
+            addMusicBtn.style.display = 'block';
+          } else {
+            addEventBtn.style.display = 'none';
+            addMusicBtn.style.display = 'none';
+          }
         }
-      }
-    })
-    .catch(error => {
-      console.error('Error:', error);
-      alert('There was an error submitting the form: ' + error.message);
-    });
+      })
+      .catch(error => {
+        console.error('Error:', error);
+        alert('There was an error submitting the form: ' + error.message);
+      });
   });
 
   dashboardBtn.onclick = () => {
@@ -152,8 +150,6 @@ document.addEventListener('DOMContentLoaded', function () {
 
   closeDashboard.onclick = () => {
     dashboardPanel.classList.remove('active');
-    eventForm.classList.add('hidden');
-    musicForm.classList.add('hidden');
   };
 
   logoutBtn.onclick = () => {
@@ -165,23 +161,31 @@ document.addEventListener('DOMContentLoaded', function () {
     alert('You have been logged out.');
   };
 
-  // Show forms on button clicks
   addEventBtn.onclick = () => {
+    document.body.classList.add('blurred');
     eventFormPopup.style.display = 'flex';
     musicFormPopup.style.display = 'none';
   };
 
   addMusicBtn.onclick = () => {
+    document.body.classList.add('blurred');
     musicFormPopup.style.display = 'flex';
     eventFormPopup.style.display = 'none';
   };
 
-  // Close popup on overlay click
-  popupOverlay.onclick = (e) => {
-    if (e.target === popupOverlay) {
+  document.querySelectorAll('.close-btn').forEach(btn => {
+    btn.onclick = () => {
       eventFormPopup.style.display = 'none';
       musicFormPopup.style.display = 'none';
-      popupOverlay.style.display = 'none';
+      document.body.classList.remove('blurred');
+    };
+  });
+
+  window.addEventListener('click', (e) => {
+    if (e.target === eventFormPopup || e.target === musicFormPopup) {
+      eventFormPopup.style.display = 'none';
+      musicFormPopup.style.display = 'none';
+      document.body.classList.remove('blurred');
     }
-  };
+  });
 });

@@ -6,6 +6,7 @@
   <title>LocalBeats</title>
   <link rel='stylesheet' href='{{url("css/welcome.css")}}'>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Segoe+UI:wght@400;600&display=swap" rel="stylesheet">
 </head>
 <body>
 
@@ -71,11 +72,11 @@
     </div>
 
      
-    <!-- Add Event Form -->
-<div id="popupOverlay" class="popup-overlay">
+    <!-- Add Event Form Popup -->
+<div id="eventFormPopup" class="popup-overlay">
     <div class="popup-form">
-        <span class="close-btn" onclick="closePopup('eventFormPopup')">&times;</span>
-        <h2 id="formTitle">Add Event</h2>
+        <span class="close-btn" onclick="document.getElementById('eventFormPopup').style.display='none'">&times;</span>
+        <h2>Add Event</h2>
         <form id="eventForm" class="popup-form">
             <input type="text" placeholder="Event Name" required />
             <input type="date" required />
@@ -87,11 +88,11 @@
     </div>
 </div>
 
-<!-- Music Form Popup -->
-<div id="popupOverlay" class="popup-overlay">
+<!-- Add Music Form Popup -->
+<div id="musicFormPopup" class="popup-overlay">
     <div class="popup-form">
-        <span class="close-btn" onclick="closePopup('musicFormPopup')">&times;</span>
-        <h2 id="formTitle">Add Music</h2>
+        <span class="close-btn" onclick="document.getElementById('musicFormPopup').style.display='none'">&times;</span>
+        <h2>Add Music</h2>
         <form id="musicForm" class="popup-form">
             <input type="file" accept="image/*" required />
             <input type="text" placeholder="Song Name" required />
@@ -102,6 +103,7 @@
         </form>
     </div>
 </div>
+
     <!-- hero section -->
   <header class="hero">
     <h1>Connect with Local Musicians</h1>
