@@ -121,17 +121,17 @@ class MusicController extends Controller
                 $file = $request->file('profile_photo');
                 $filename = time() . '_' . $file->getClientOriginalName();
                 
-                // Store the file in the public/profile_photos directory
-                $file->move(public_path('profile_photos'), $filename);
+                // Store the file in the storage/app/public directory
+                $path = $request->file('profile_photo')->storeAs('profile_photos', $filename, 'public');
                 
-                // Update the user's profile_photo field in the database
-                $user->profile_photo = 'profile_photos/' . $filename;
+                // Update the user's profile_photo field in the database with the relative path
+                $user->profile_photo = $path;
                 $user->save();
 
                 return response()->json([
                     'success' => true,
                     'message' => 'Profile photo updated successfully',
-                    'photo_url' => asset($user->profile_photo)
+                    'photo_url' => asset('storage/' . $path)
                 ]);
             }
 

@@ -9,10 +9,10 @@
         @foreach($musicians as $musician)
             <div class="musician-card">
                 <div class="musician-header">
-                    @if($musician->user && $musician->user->profile_photo)
-                        <img src="{{ asset($musician->user->profile_photo) }}" alt="{{ $musician->band_name }}" class="profile-photo">
+                    @if($musician->profile_image)
+                        <img src="{{ asset('storage/' . $musician->profile_image) }}" alt="{{ $musician->band_name }}" class="profile-photo" onerror="this.src='{{ asset('images/default-avatar.png') }}'">
                     @else
-                        <img src="{{ asset('images/default-profile.jpg') }}" alt="Default Profile" class="profile-photo">
+                        <img src="{{ asset('images/default-avatar.png') }}" alt="Default Profile" class="profile-photo">
                     @endif
                     <h2>{{ $musician->band_name }}</h2>
                     <p class="genre">{{ $musician->genre }}</p>
@@ -35,9 +35,9 @@
                             <h3>Latest Music</h3>
                             @foreach($musician->featured_music->take(3) as $music)
                                 <div class="music-item">
-                                    <h4>{{ $music->title }}</h4>
+                                    <h4>{{ $music->artist_name }}</h4>
                                     <audio controls class="audio-player">
-                                        <source src="{{ asset('storage/' . $music->file_path) }}" type="audio/mpeg">
+                                        <source src="{{ asset('storage/' . $music->song_path) }}" type="audio/mpeg">
                                         Your browser does not support the audio element.
                                     </audio>
                                 </div>
@@ -50,7 +50,7 @@
                             <h3>Upcoming Events</h3>
                             @foreach($musician->upcoming_events->take(3) as $event)
                                 <div class="event-item">
-                                    <h4>{{ $event->title }}</h4>
+                                    <h4>{{ $event->name }}</h4>
                                     <p>{{ $event->date }}</p>
                                 </div>
                             @endforeach

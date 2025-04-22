@@ -31,8 +31,8 @@ class UploadController extends Controller
                 $file = $request->file('file');
                 $filename = time() . '_' . $file->getClientOriginalName();
                 
-                // Store the file in the public/music directory
-                $file->move(public_path('music'), $filename);
+                // Store the file in the storage/app/public/music directory
+                $path = $request->file('file')->storeAs('music', $filename, 'public');
                 
                 // Create a new featured music entry
                 $music = new FeaturedMusic();
@@ -40,19 +40,18 @@ class UploadController extends Controller
                 $music->artist_name = $request->title;
                 $music->genre = $request->genre ?? 'Unknown';
                 $music->ratings = 0;
-                $music->song_path = 'music/' . $filename;
+                $music->song_path = $path;
                 
                 // Handle cover image if provided
                 if ($request->hasFile('cover_image')) {
                     $coverImage = $request->file('cover_image');
                     $coverFilename = time() . '_' . $coverImage->getClientOriginalName();
-                    $coverImage->move(public_path('images/music_covers'), $coverFilename);
-                    $music->image = 'images/music_covers/' . $coverFilename;
+                    $coverPath = $coverImage->storeAs('music_covers', $coverFilename, 'public');
+                    $music->image = $coverPath;
                 }
                 
                 $music->save();
 
-                // Return a simplified response without trying to format dates
                 return response()->json([
                     'success' => true,
                     'message' => 'Music uploaded successfully',
@@ -99,8 +98,8 @@ class UploadController extends Controller
                 $file = $request->file('image');
                 $filename = time() . '_' . $file->getClientOriginalName();
                 
-                // Store the file in the public/events directory
-                $file->move(public_path('events'), $filename);
+                // Store the file in the storage/app/public/events directory
+                $path = $request->file('image')->storeAs('events', $filename, 'public');
                 
                 // Create a new upcoming event entry
                 $event = new UpcomingEvent();
@@ -110,7 +109,7 @@ class UploadController extends Controller
                 $event->time = $request->time;
                 $event->location = $request->location;
                 $event->price = $request->price;
-                $event->image = 'events/' . $filename;
+                $event->image = $path;
                 $event->save();
 
                 return response()->json([
@@ -146,30 +145,17 @@ class UploadController extends Controller
                 $file = $request->file('profile_photo');
                 $filename = time() . '_' . $file->getClientOriginalName();
                 
-                // Define the upload path
-                $uploadPath = public_path('images/profile');
-                
-                // Delete old photo if it exists
-                if ($musician->profile_photo && file_exists($uploadPath . '/' . $musician->profile_photo)) {
-                    unlink($uploadPath . '/' . $musician->profile_photo);
-                }
-                
-                // Move the new file
-                $file->move($uploadPath, $filename);
-                
-                // Verify the file was moved successfully
-                if (!file_exists($uploadPath . '/' . $filename)) {
-                    throw new \Exception('Failed to move uploaded file to destination.');
-                }
+                // Store the file in the storage/app/public/profile_photos directory
+                $path = $request->file('profile_photo')->storeAs('profile_photos', $filename, 'public');
                 
                 // Update the database
-                $musician->profile_photo = $filename;
+                $musician->profile_image = $path;
                 $musician->save();
 
                 return response()->json([
                     'success' => true,
                     'message' => 'Profile photo updated successfully',
-                    'photo_url' => asset('images/profile/' . $filename)
+                    'photo_url' => asset('storage/' . $path)
                 ]);
             }
 
