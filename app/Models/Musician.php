@@ -11,11 +11,28 @@ class Musician extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['user_id', 'band_name', 'genre'];
+    protected $fillable = [
+        'user_id',
+        'band_name',
+        'genre',
+        'bio',
+        'location',
+        'profile_image'
+    ];
 
     // A musician belongs to a user
     public function user()
     {
         return $this->belongsTo(User::class);
+    }
+
+    public function featured_music()
+    {
+        return $this->hasMany(FeaturedMusic::class);
+    }
+
+    public function upcoming_events()
+    {
+        return $this->hasMany(UpcomingEvents::class);
     }
 }

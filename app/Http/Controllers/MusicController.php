@@ -51,7 +51,7 @@ class MusicController extends Controller
 
     public function music()
     {
-        $music = [];
+        $music = collect([]);
         $message = '';
         
         if (session()->has('user_id')) {
@@ -72,13 +72,15 @@ class MusicController extends Controller
 
     public function about()
     {
-        // Get all musicians with their user data
-        $musicians = Musician::with('user')->get();
+        // Get all musicians with their user data and relationships
+        $musicians = Musician::with(['user', 'featured_music', 'upcoming_events'])->get();
         
         // Get the current user's musician profile if logged in
         $currentMusician = null;
         if (session()->has('user_id')) {
-            $currentMusician = Musician::with('user')->where('user_id', session('user_id'))->first();
+            $currentMusician = Musician::with(['user', 'featured_music', 'upcoming_events'])
+                ->where('user_id', session('user_id'))
+                ->first();
         }
         
         return view('pages.about', compact('musicians', 'currentMusician'));
