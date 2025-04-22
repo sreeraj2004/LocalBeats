@@ -1,4 +1,6 @@
 document.addEventListener('DOMContentLoaded', function () {
+  console.log('DOM Content Loaded');
+
   const loginBtn = document.getElementById('loginBtn');
   const signupBtn = document.getElementById('signupBtn');
   const popupOverlay = document.getElementById('popupOverlay');
@@ -31,6 +33,11 @@ document.addEventListener('DOMContentLoaded', function () {
 
   const eventFormPopup = document.getElementById('eventFormPopup');
   const musicFormPopup = document.getElementById('musicFormPopup');
+
+  const musicToggleBtn = document.getElementById('musicToggleBtn');
+  const eventToggleBtn = document.getElementById('eventToggleBtn');
+  const musicSection = document.getElementById('musicSection');
+  const eventSection = document.getElementById('eventSection');
 
   let currentMode = 'login';
   let currentType = 'User';
@@ -143,10 +150,76 @@ document.addEventListener('DOMContentLoaded', function () {
   // Call checkAuthState on page load
   checkAuthState();
 
-  function showPopup(mode) {
-    currentMode = mode;
-    popupOverlay.style.display = 'flex';
-    updateForm();
+  // Function to get element with retry
+  function getElementWithRetry(id, maxRetries = 3) {
+    let element = document.getElementById(id);
+    let retries = 0;
+    
+    while (!element && retries < maxRetries) {
+      console.log(`Retrying to find element: ${id}, attempt ${retries + 1}`);
+      element = document.getElementById(id);
+      retries++;
+    }
+    
+    if (!element) {
+      console.error(`Element not found after ${maxRetries} retries: ${id}`);
+      // Log all elements with IDs for debugging
+      console.log('All elements with IDs:', Array.from(document.querySelectorAll('[id]')).map(el => el.id));
+    }
+    
+    return element;
+  }
+
+  // Function to show popup
+  function showPopup(popupId) {
+    console.log(`Attempting to show popup: ${popupId}`);
+    const popup = document.getElementById(popupId);
+    console.log('Popup element:', popup);
+    
+    if (popup) {
+      console.log(`Showing popup: ${popupId}`);
+      // Remove any existing display style
+      popup.removeAttribute('style');
+      // Add the active class
+      popup.classList.add('active');
+      // Ensure the popup is visible
+      popup.style.display = 'flex';
+      popup.style.position = 'fixed';
+      popup.style.top = '0';
+      popup.style.left = '0';
+      popup.style.width = '100%';
+      popup.style.height = '100%';
+      popup.style.justifyContent = 'center';
+      popup.style.alignItems = 'center';
+      popup.style.zIndex = '1000';
+    } else {
+      console.error(`Popup element not found: ${popupId}`);
+      // Try to find the element again
+      const retryElement = getElementWithRetry(popupId);
+      if (retryElement) {
+        console.log('Found element on retry, showing popup');
+        retryElement.removeAttribute('style');
+        retryElement.classList.add('active');
+        retryElement.style.display = 'flex';
+        retryElement.style.position = 'fixed';
+        retryElement.style.top = '0';
+        retryElement.style.left = '0';
+        retryElement.style.width = '100%';
+        retryElement.style.height = '100%';
+        retryElement.style.justifyContent = 'center';
+        retryElement.style.alignItems = 'center';
+        retryElement.style.zIndex = '1000';
+      }
+    }
+  }
+
+  // Function to hide popup
+  function hidePopup(popupId) {
+    const popup = document.getElementById(popupId);
+    if (popup) {
+      popup.style.display = 'none';
+      popup.classList.remove('active');
+    }
   }
 
   function updateForm() {
@@ -329,31 +402,50 @@ document.addEventListener('DOMContentLoaded', function () {
   if (navLogoutBtn) navLogoutBtn.onclick = handleLogout;
   if (dashboardLogoutBtn) dashboardLogoutBtn.onclick = handleLogout;
 
-  addEventBtn.onclick = () => {
-    document.body.classList.add('blurred');
-    eventFormPopup.style.display = 'flex';
-    musicFormPopup.style.display = 'none';
-  };
+  // Initialize Show More/Less functionality if elements exist
+  if (musicToggleBtn && eventToggleBtn && musicSection && eventSection) {
+    musicToggleBtn.addEventListener('click', () => {
+      musicSection.style.display = musicSection.style.display === 'none' ? 'block' : 'none';
+      musicToggleBtn.textContent = musicSection.style.display === 'none' ? 'Show Music' : 'Hide Music';
+    });
 
-  addMusicBtn.onclick = () => {
-    document.body.classList.add('blurred');
-    musicFormPopup.style.display = 'flex';
-    eventFormPopup.style.display = 'none';
-  };
+    eventToggleBtn.addEventListener('click', () => {
+      eventSection.style.display = eventSection.style.display === 'none' ? 'block' : 'none';
+      eventToggleBtn.textContent = eventSection.style.display === 'none' ? 'Show Events' : 'Hide Events';
+    });
+  }
 
+  // Add event listeners for add buttons
+  if (addEventBtn) {
+    addEventBtn.addEventListener('click', function() {
+      console.log('Add Event button clicked');
+      showPopup('eventFormPopup');
+      hidePopup('musicFormPopup');
+    });
+  }
+
+  if (addMusicBtn) {
+    addMusicBtn.addEventListener('click', function() {
+      console.log('Add Music button clicked');
+      showPopup('musicFormPopup');
+      hidePopup('eventFormPopup');
+    });
+  }
+
+  // Add close button functionality
   document.querySelectorAll('.close-btn').forEach(btn => {
-    btn.onclick = () => {
-      eventFormPopup.style.display = 'none';
-      musicFormPopup.style.display = 'none';
-      document.body.classList.remove('blurred');
-    };
+    btn.addEventListener('click', function() {
+      const popup = this.closest('.form-popup');
+      if (popup) {
+        hidePopup(popup.id);
+      }
+    });
   });
 
-  window.addEventListener('click', (e) => {
-    if (e.target === eventFormPopup || e.target === musicFormPopup) {
-      eventFormPopup.style.display = 'none';
-      musicFormPopup.style.display = 'none';
-      document.body.classList.remove('blurred');
+  // Add click outside to close functionality
+  document.addEventListener('click', function(event) {
+    if (event.target.classList.contains('form-popup')) {
+      hidePopup(event.target.id);
     }
   });
 
@@ -512,62 +604,6 @@ document.addEventListener('DOMContentLoaded', function () {
 // Show More/Show Less functionality - moved outside the nested DOMContentLoaded
 document.addEventListener('DOMContentLoaded', function() {
   console.log('Initializing Show More/Less functionality');
-  
-  // Music toggle functionality
-  const musicToggleBtn = document.getElementById('musicToggleBtn');
-  if (musicToggleBtn) {
-    console.log('Music toggle button found');
-    musicToggleBtn.addEventListener('click', function() {
-      console.log('Music toggle button clicked');
-      const hiddenMusicItems = document.querySelectorAll('.music-card.hidden-item');
-      if (hiddenMusicItems.length > 0) {
-        // Show all items
-        hiddenMusicItems.forEach(item => {
-          item.classList.remove('hidden-item');
-        });
-        musicToggleBtn.textContent = 'Show Less';
-      } else {
-        // Hide items beyond the first 3
-        const musicCards = document.querySelectorAll('.music-card');
-        musicCards.forEach((item, index) => {
-          if (index >= 3) {
-            item.classList.add('hidden-item');
-          }
-        });
-        musicToggleBtn.textContent = 'Show More';
-      }
-    });
-  } else {
-    console.log('Music toggle button not found');
-  }
-
-  // Event toggle functionality
-  const eventToggleBtn = document.getElementById('eventToggleBtn');
-  if (eventToggleBtn) {
-    console.log('Event toggle button found');
-    eventToggleBtn.addEventListener('click', function() {
-      console.log('Event toggle button clicked');
-      const hiddenEventItems = document.querySelectorAll('.event-card.hidden-item');
-      if (hiddenEventItems.length > 0) {
-        // Show all items
-        hiddenEventItems.forEach(item => {
-          item.classList.remove('hidden-item');
-        });
-        eventToggleBtn.textContent = 'Show Less';
-      } else {
-        // Hide items beyond the first 3
-        const eventCards = document.querySelectorAll('.event-card');
-        eventCards.forEach((item, index) => {
-          if (index >= 3) {
-            item.classList.add('hidden-item');
-          }
-        });
-        eventToggleBtn.textContent = 'Show More';
-      }
-    });
-  } else {
-    console.log('Event toggle button not found');
-  }
   
   // Single audio player functionality
   let currentlyPlayingAudio = null;

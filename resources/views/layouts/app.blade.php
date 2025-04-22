@@ -37,6 +37,7 @@
     <!-- Include the popup forms and dashboard panel from welcome.blade.php -->
     @include('partials.auth-forms')
     @include('partials.dashboard-panel')
+    @include('partials.form-popups')
 
     <script src="{{ asset('js/home.js')}}" type="text/javascript"></script>
 </body>
