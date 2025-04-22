@@ -30,12 +30,44 @@ class MusicController extends Controller
 
     public function events()
     {
-        return view('pages.events');
+        $events = collect([]);
+        $message = '';
+        
+        if (session()->has('user_id')) {
+            $musician = Musician::where('user_id', session('user_id'))->first();
+            if ($musician) {
+                $events = UpcomingEvents::where('musician_id', $musician->id)
+                    ->orderBy('created_at', 'desc')
+                    ->get();
+                
+                if ($events->isEmpty()) {
+                    $message = "You haven't created any events yet. Start by creating your first event!";
+                }
+            }
+        }
+        
+        return view('pages.events', compact('events', 'message'));
     }
 
     public function music()
     {
-        return view('pages.music');
+        $music = [];
+        $message = '';
+        
+        if (session()->has('user_id')) {
+            $musician = Musician::where('user_id', session('user_id'))->first();
+            if ($musician) {
+                $music = FeaturedMusic::where('musician_id', $musician->id)
+                    ->orderBy('created_at', 'desc')
+                    ->get();
+                
+                if ($music->isEmpty()) {
+                    $message = "You haven't shared any music yet. Share your first track with the world!";
+                }
+            }
+        }
+        
+        return view('pages.music', compact('music', 'message'));
     }
 
     public function about()
