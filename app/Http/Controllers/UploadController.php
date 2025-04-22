@@ -62,37 +62,48 @@ class UploadController extends Controller
         try {
             $request->validate([
                 'title' => 'required|string|max:255',
-                'description' => 'required|string',
                 'date' => 'required|date',
                 'time' => 'required',
                 'location' => 'required|string|max:255',
+                'price' => 'required|numeric',
+                'image' => 'required|image|mimes:jpeg,png,jpg,gif,webp|max:2048'
             ]);
 
-            $user = auth()->user();
-            if (!$user) {
+            if (!session()->has('user_id')) {
                 return response()->json(['success' => false, 'message' => 'User not authenticated'], 401);
             }
 
-            $musician = Musician::where('user_id', $user->id)->first();
+            $musician = Musician::where('user_id', session('user_id'))->first();
             if (!$musician) {
                 return response()->json(['success' => false, 'message' => 'Musician profile not found'], 404);
             }
 
-            // Create a new upcoming event entry
-            $event = new UpcomingEvent();
-            $event->musician_id = $musician->id;
-            $event->title = $request->title;
-            $event->description = $request->description;
-            $event->date = $request->date;
-            $event->time = $request->time;
-            $event->location = $request->location;
-            $event->save();
+            if ($request->hasFile('image')) {
+                $file = $request->file('image');
+                $filename = time() . '_' . $file->getClientOriginalName();
+                
+                // Store the file in the public/events directory
+                $file->move(public_path('events'), $filename);
+                
+                // Create a new upcoming event entry
+                $event = new UpcomingEvent();
+                $event->musician_id = $musician->id;
+                $event->name = $request->title;
+                $event->date = $request->date;
+                $event->time = $request->time;
+                $event->location = $request->location;
+                $event->price = $request->price;
+                $event->image = 'events/' . $filename;
+                $event->save();
 
-            return response()->json([
-                'success' => true,
-                'message' => 'Event created successfully',
-                'event' => $event
-            ]);
+                return response()->json([
+                    'success' => true,
+                    'message' => 'Event created successfully',
+                    'event' => $event
+                ]);
+            }
+
+            return response()->json(['success' => false, 'message' => 'No image uploaded'], 400);
         } catch (\Exception $e) {
             return response()->json(['success' => false, 'message' => $e->getMessage()], 500);
         }
