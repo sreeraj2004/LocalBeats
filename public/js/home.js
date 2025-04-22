@@ -233,8 +233,17 @@ document.addEventListener('DOMContentLoaded', function () {
     musicianFields.style.display = (currentMode === 'signup' && currentType === 'Musician') ? 'block' : 'none';
   }
 
-  loginBtn.onclick = () => showPopup('login');
-  signupBtn.onclick = () => showPopup('signup');
+  loginBtn.onclick = () => {
+    currentMode = 'login';
+    updateForm();
+    showPopup('popupOverlay');
+  };
+  
+  signupBtn.onclick = () => {
+    currentMode = 'signup';
+    updateForm();
+    showPopup('popupOverlay');
+  };
   
   // Fix for close button functionality
   if (closePopup) {
@@ -506,6 +515,15 @@ document.addEventListener('DOMContentLoaded', function () {
   if (eventForm) {
     eventForm.addEventListener('submit', function(e) {
       e.preventDefault();
+      
+      // Check if user is authenticated
+      if (!sessionStorage.getItem('userType')) {
+        alert('Please log in to add an event');
+        showPopup('popupOverlay');
+        currentMode = 'login';
+        updateForm();
+        return;
+      }
       
       const formData = new FormData(eventForm);
       

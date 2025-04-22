@@ -1,1 +1,4 @@
-@import '~bootstrap/scss/bootstrap';
+/* Import Bootstrap */
+@import "bootstrap";
+
+/* Add your custom styles below */

@@ -20,7 +20,9 @@ class MusicController extends Controller
 
     public function home()
     {
-        return view('pages.home');
+        $events = UpcomingEvents::orderBy('date', 'asc')->get();
+        $music = FeaturedMusic::orderBy('created_at', 'desc')->get();
+        return view('pages.home', compact('events', 'music'));
     }
 
     public function musicians()

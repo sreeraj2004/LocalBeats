@@ -7,24 +7,28 @@
             <form id="eventForm" method="POST" action="/events" enctype="multipart/form-data" class="form-content">
                 @csrf
                 <div class="form-group">
-                    <label for="event_name">Event Name</label>
-                    <input type="text" id="event_name" name="event_name" class="form-input" required>
+                    <label for="title">Event Name</label>
+                    <input type="text" id="title" name="title" class="form-input" required>
                 </div>
                 <div class="form-group">
-                    <label for="event_date">Event Date</label>
-                    <input type="datetime-local" id="event_date" name="event_date" class="form-input" required>
+                    <label for="date">Event Date</label>
+                    <input type="date" id="date" name="date" class="form-input" required>
                 </div>
                 <div class="form-group">
-                    <label for="event_location">Location</label>
-                    <input type="text" id="event_location" name="event_location" class="form-input" required>
+                    <label for="time">Event Time</label>
+                    <input type="time" id="time" name="time" class="form-input" required>
                 </div>
                 <div class="form-group">
-                    <label for="event_description">Description</label>
-                    <textarea id="event_description" name="event_description" class="form-textarea" required></textarea>
+                    <label for="location">Location</label>
+                    <input type="text" id="location" name="location" class="form-input" required>
                 </div>
                 <div class="form-group">
-                    <label for="event_image">Event Image</label>
-                    <input type="file" id="event_image" name="event_image" class="form-file" accept="image/*">
+                    <label for="description">Description</label>
+                    <textarea id="description" name="description" class="form-textarea" required></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="image">Event Image</label>
+                    <input type="file" id="image" name="image" class="form-file" accept="image/*" required>
                 </div>
                 <button type="submit" class="submit-btn">Create Event</button>
             </form>
@@ -41,24 +45,24 @@
             <form id="musicForm" method="POST" action="/music" enctype="multipart/form-data" class="form-content">
                 @csrf
                 <div class="form-group">
-                    <label for="music_title">Title</label>
-                    <input type="text" id="music_title" name="music_title" class="form-input" required>
+                    <label for="title">Title</label>
+                    <input type="text" id="title" name="title" class="form-input" required>
                 </div>
                 <div class="form-group">
-                    <label for="music_genre">Genre</label>
-                    <input type="text" id="music_genre" name="music_genre" class="form-input" required>
+                    <label for="genre">Genre</label>
+                    <input type="text" id="genre" name="genre" class="form-input" required>
                 </div>
                 <div class="form-group">
-                    <label for="music_description">Description</label>
-                    <textarea id="music_description" name="music_description" class="form-textarea" required></textarea>
+                    <label for="description">Description</label>
+                    <textarea id="description" name="description" class="form-textarea" required></textarea>
                 </div>
                 <div class="form-group">
-                    <label for="music_file">Music File</label>
-                    <input type="file" id="music_file" name="music_file" class="form-file" accept="audio/*" required>
+                    <label for="file">Music File</label>
+                    <input type="file" id="file" name="file" class="form-file" accept="audio/*" required>
                 </div>
                 <div class="form-group">
-                    <label for="music_cover">Cover Image</label>
-                    <input type="file" id="music_cover" name="music_cover" class="form-file" accept="image/*">
+                    <label for="cover_image">Cover Image</label>
+                    <input type="file" id="cover_image" name="cover_image" class="form-file" accept="image/*" required>
                 </div>
                 <button type="submit" class="submit-btn">Upload Music</button>
             </form>
