@@ -113,10 +113,6 @@
   <header class="hero">
     <h1>Connect with Local Musicians</h1>
     <p>Discover talented artists in your area, attend local events, and explore unique albums from independent musicians.</p>
-    <div class="hero-buttons">
-      <button class="find-btn">Find Musicians</button>
-      <button class="secondary-btn">Learn More</button>
-    </div>
   </header>
 
   <section class="featured-music-section">
@@ -166,7 +162,7 @@
     <div class="community-section">
         <h2>Join Our Community</h2>
         <p>Are you a musician looking to connect with fans? Or a music lover wanting to discover local talent?</p>
-        <button>Sign Up for Free</button>
+        <button id="communitySignupBtn">Sign Up for Free</button>
     </div>
 
     <!-- footer -->

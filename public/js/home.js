@@ -320,6 +320,16 @@ document.addEventListener('DOMContentLoaded', function () {
       });
     });
   }
+
+  // Community section signup button
+  const communitySignupBtn = document.getElementById('communitySignupBtn');
+  if (communitySignupBtn) {
+    communitySignupBtn.addEventListener('click', function() {
+      popupOverlay.style.display = 'flex';
+      currentMode = 'signup';
+      updateFormFields();
+    });
+  }
 });
 
 // Show More/Show Less functionality - moved outside the nested DOMContentLoaded
