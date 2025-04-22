@@ -124,6 +124,9 @@ class AuthController extends Controller
 
                 Log::info('Musician login successful:', ['musician_id' => $musician->id, 'user_id' => $user->id]);
 
+                // Store user_id in session
+                session(['user_id' => $user->id]);
+
                 return response()->json([
                     'message' => 'Login successful',
                     'user' => $user,
@@ -147,15 +150,16 @@ class AuthController extends Controller
             }
 
             Log::info('User login successful:', ['user_id' => $user->id]);
+            
+            // Store user_id in session
+            session(['user_id' => $user->id]);
 
             return response()->json([
                 'message' => 'Login successful',
-                'user' => $user,
-                'isMusician' => false
+                'user' => $user
             ]);
         } catch (\Exception $e) {
             Log::error('Login error: ' . $e->getMessage());
-            Log::error($e->getTraceAsString());
             return response()->json(['error' => 'Login failed. Please try again.'], 500);
         }
     }

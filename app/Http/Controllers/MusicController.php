@@ -6,6 +6,8 @@ use Illuminate\Http\Request;
 
 use App\Models\FeaturedMusic;
 use App\Models\UpcomingEvents;
+use App\Models\Musician;
+use App\Models\User;
 
 class MusicController extends Controller
 {
@@ -38,6 +40,15 @@ class MusicController extends Controller
 
     public function about()
     {
-        return view('pages.about');
+        // Get all musicians with their user data
+        $musicians = Musician::with('user')->get();
+        
+        // Get the current user's musician profile if logged in
+        $currentMusician = null;
+        if (session()->has('user_id')) {
+            $currentMusician = Musician::with('user')->where('user_id', session('user_id'))->first();
+        }
+        
+        return view('pages.about', compact('musicians', 'currentMusician'));
     }
 }
