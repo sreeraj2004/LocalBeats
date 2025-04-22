@@ -17,7 +17,19 @@ class FeaturedMusic extends Model
         'genre',
         'ratings',
         'song_path',
+        'musician_id'
     ];
+
+    protected $casts = [
+        'created_at' => 'datetime',
+        'updated_at' => 'datetime',
+    ];
+
+    // Add relationship to Musician model
+    public function musician()
+    {
+        return $this->belongsTo(Musician::class);
+    }
     
     protected static function boot()
     {

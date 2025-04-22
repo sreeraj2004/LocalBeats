@@ -459,9 +459,60 @@ document.addEventListener('DOMContentLoaded', function () {
   });
 
   // Add event listeners for music and event forms
+  console.log('Checking music form elements:');
+  console.log('Music form:', musicForm);
+  console.log('Music form popup:', musicFormPopup);
+  
   if (musicForm) {
+    console.log('Music form found, checking for file input...');
+    const musicFileInput = document.getElementById('musicFile');
+    console.log('Music file input:', musicFileInput);
+    
+    if (!musicFileInput) {
+      console.error('Music file input not found in form');
+      // Try to find it again after a short delay
+      setTimeout(() => {
+        const retryMusicFileInput = document.getElementById('musicFile');
+        console.log('Retry - Music file input:', retryMusicFileInput);
+        if (!retryMusicFileInput) {
+          console.error('Music file input still not found after retry');
+          // Log all form elements to help debug
+          console.log('All form elements:', Array.from(musicForm.elements).map(el => ({
+            id: el.id,
+            name: el.name,
+            type: el.type
+          })));
+        }
+      }, 1000);
+    }
+    
     musicForm.addEventListener('submit', function(e) {
       e.preventDefault();
+      
+      const currentMusicFileInput = document.getElementById('musicFile');
+      console.log('Current music file input on submit:', currentMusicFileInput);
+      
+      if (!currentMusicFileInput) {
+        console.error('Music file input not found on submit');
+        alert('Error: Music file input not found. Please try again.');
+        return;
+      }
+      
+      // Check if a file is selected
+      if (!currentMusicFileInput.files || !currentMusicFileInput.files.length) {
+        alert('Please select a music file to upload');
+        return;
+      }
+
+      // Validate file type
+      const file = currentMusicFileInput.files[0];
+      const validTypes = ['audio/mp3', 'audio/mpeg', 'audio/wav', 'audio/x-wav', 'audio/wave'];
+      const fileExtension = file.name.split('.').pop().toLowerCase();
+      
+      if (!validTypes.includes(file.type) && !['mp3', 'wav'].includes(fileExtension)) {
+        alert('Please select a valid audio file (MP3 or WAV)');
+        return;
+      }
       
       const formData = new FormData(musicForm);
       
@@ -496,7 +547,9 @@ document.addEventListener('DOMContentLoaded', function () {
         console.log('Success response:', data);
         if (data.success) {
           alert('Music uploaded successfully!');
-          musicFormPopup.style.display = 'none';
+          if (musicFormPopup) {
+            musicFormPopup.style.display = 'none';
+          }
           document.body.classList.remove('blurred');
           musicForm.reset();
           // Optionally refresh the page to show the new music
@@ -510,6 +563,8 @@ document.addEventListener('DOMContentLoaded', function () {
         alert('There was an error uploading the music: ' + error.message);
       });
     });
+  } else {
+    console.error('Music form not found');
   }
 
   if (eventForm) {

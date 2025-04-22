@@ -98,14 +98,23 @@
         <div class="unique-popup-form">
             <span class="unique-close-btn" onclick="document.getElementById('musicFormPopup').style.display='none'">&times;</span>
             <h2>Add Music</h2>
-            @csrf
             <form id="musicForm" class="unique-popup-form" enctype="multipart/form-data" method="POST" action="/upload-music">
-                <input type="file" accept="image/*" name="image" required />
-                <input type="text" placeholder="Artist Name" name="artist_name" required />
-                <input type="text" placeholder="Genre" name="genre" required />
-                <input type="number" placeholder="Rating" name="ratings" required />
-                <input type="file" accept="audio/*" name="song" required />
-                <button type="submit">Submit</button>
+                @csrf
+                <div class="form-group">
+                    <input type="text" class="form-control" placeholder="Title" name="title" required />
+                </div>
+                <div class="form-group">
+                    <input type="text" class="form-control" placeholder="Genre" name="genre" required />
+                </div>
+                <div class="form-group">
+                    <label for="musicFile">Select Music File (MP3 or WAV)</label>
+                    <input type="file" class="form-control" id="musicFile" name="file" accept="audio/mp3,audio/wav" required />
+                </div>
+                <div class="form-group">
+                    <label for="musicCoverImage">Cover Image (Optional)</label>
+                    <input type="file" class="form-control" id="musicCoverImage" name="cover_image" accept="image/*" />
+                </div>
+                <button type="submit" class="submit-btn">Upload Music</button>
             </form>
         </div>
     </div>

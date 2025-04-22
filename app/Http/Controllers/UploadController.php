@@ -15,22 +15,20 @@ class UploadController extends Controller
         try {
             $request->validate([
                 'title' => 'required|string|max:255',
-                'description' => 'required|string',
-                'music_file' => 'required|mimes:mp3,wav|max:10240', // 10MB max
+                'file' => 'required|mimes:mp3,wav|max:10240', // 10MB max
             ]);
 
-            $user = auth()->user();
-            if (!$user) {
+            if (!session()->has('user_id')) {
                 return response()->json(['success' => false, 'message' => 'User not authenticated'], 401);
             }
 
-            $musician = Musician::where('user_id', $user->id)->first();
+            $musician = Musician::where('user_id', session('user_id'))->first();
             if (!$musician) {
                 return response()->json(['success' => false, 'message' => 'Musician profile not found'], 404);
             }
 
-            if ($request->hasFile('music_file')) {
-                $file = $request->file('music_file');
+            if ($request->hasFile('file')) {
+                $file = $request->file('file');
                 $filename = time() . '_' . $file->getClientOriginalName();
                 
                 // Store the file in the public/music directory
@@ -39,20 +37,39 @@ class UploadController extends Controller
                 // Create a new featured music entry
                 $music = new FeaturedMusic();
                 $music->musician_id = $musician->id;
-                $music->title = $request->title;
-                $music->description = $request->description;
-                $music->file_path = 'music/' . $filename;
+                $music->artist_name = $request->title;
+                $music->genre = $request->genre ?? 'Unknown';
+                $music->ratings = 0;
+                $music->song_path = 'music/' . $filename;
+                
+                // Handle cover image if provided
+                if ($request->hasFile('cover_image')) {
+                    $coverImage = $request->file('cover_image');
+                    $coverFilename = time() . '_' . $coverImage->getClientOriginalName();
+                    $coverImage->move(public_path('images/music_covers'), $coverFilename);
+                    $music->image = 'images/music_covers/' . $coverFilename;
+                }
+                
                 $music->save();
 
+                // Return a simplified response without trying to format dates
                 return response()->json([
                     'success' => true,
                     'message' => 'Music uploaded successfully',
-                    'music' => $music
+                    'music' => [
+                        'id' => $music->id,
+                        'artist_name' => $music->artist_name,
+                        'genre' => $music->genre,
+                        'ratings' => $music->ratings,
+                        'song_path' => $music->song_path,
+                        'image' => $music->image
+                    ]
                 ]);
             }
 
             return response()->json(['success' => false, 'message' => 'No file uploaded'], 400);
         } catch (\Exception $e) {
+            \Log::error('Music upload error: ' . $e->getMessage());
             return response()->json(['success' => false, 'message' => $e->getMessage()], 500);
         }
     }

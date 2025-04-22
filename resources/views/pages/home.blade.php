@@ -36,12 +36,12 @@
         <div class="music-grid">
             @foreach($music as $track)
                 <div class="music-card">
-                    <img src="{{ asset('storage/' . $track->cover_image) }}" alt="{{ $track->title }}">
-                    <h3>{{ $track->title }}</h3>
+                    <img src="{{ asset('storage/' . $track->image) }}" alt="{{ $track->artist_name }}">
+                    <h3>{{ $track->artist_name }}</h3>
                     <p class="genre">{{ $track->genre }}</p>
-                    <p class="description">{{ $track->description }}</p>
+                    <p class="ratings">Rating: {{ $track->ratings }}/5</p>
                     <audio controls>
-                        <source src="{{ asset('storage/' . $track->file_path) }}" type="audio/mpeg">
+                        <source src="{{ asset('storage/' . $track->song_path) }}" type="audio/mpeg">
                         Your browser does not support the audio element.
                     </audio>
                 </div>
