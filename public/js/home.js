@@ -21,7 +21,8 @@ document.addEventListener('DOMContentLoaded', function () {
   const dashboardBtn = document.getElementById('dashboardBtn');
   const dashboardPanel = document.getElementById('dashboardPanel');
   const closeDashboard = document.getElementById('closeDashboard');
-  const logoutBtn = document.getElementById('logoutBtn');
+  const navLogoutBtn = document.getElementById('navLogoutBtn');
+  const dashboardLogoutBtn = document.getElementById('dashboardLogoutBtn');
   const addEventBtn = document.getElementById('addEventBtn');
   const addMusicBtn = document.getElementById('addMusicBtn');
 
@@ -140,7 +141,14 @@ document.addEventListener('DOMContentLoaded', function () {
 
           loginBtn.style.display = 'none';
           signupBtn.style.display = 'none';
-          dashboardBtn.style.display = 'inline-block';
+          
+          if (currentType === 'Musician') {
+            dashboardBtn.style.display = 'inline-block';
+            navLogoutBtn.style.display = 'none';
+          } else {
+            dashboardBtn.style.display = 'none';
+            navLogoutBtn.style.display = 'inline-block';
+          }
 
           sessionStorage.setItem('userType', currentType);
           sessionStorage.setItem('userName', data.user?.name || '');
@@ -177,14 +185,20 @@ document.addEventListener('DOMContentLoaded', function () {
     dashboardPanel.classList.remove('active');
   };
 
-  logoutBtn.onclick = () => {
+  // Function to handle logout
+  function handleLogout() {
     dashboardPanel.classList.remove('active');
     dashboardBtn.style.display = 'none';
+    navLogoutBtn.style.display = 'none';
     loginBtn.style.display = 'inline-block';
     signupBtn.style.display = 'inline-block';
     sessionStorage.clear();
     alert('You have been logged out.');
-  };
+  }
+
+  // Add click handlers for both logout buttons
+  navLogoutBtn.onclick = handleLogout;
+  dashboardLogoutBtn.onclick = handleLogout;
 
   addEventBtn.onclick = () => {
     document.body.classList.add('blurred');

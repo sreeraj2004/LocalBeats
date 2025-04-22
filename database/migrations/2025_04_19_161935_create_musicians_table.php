@@ -14,8 +14,6 @@ class CreateMusiciansTable extends Migration
             $table->foreignId('user_id')->constrained()->onDelete('cascade');
             $table->string('band_name');
             $table->string('genre');
-            $table->string('email')->unique();
-            $table->string('password');
             $table->timestamps();
         });
     }

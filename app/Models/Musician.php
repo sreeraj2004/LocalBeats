@@ -11,7 +11,7 @@ class Musician extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['user_id', 'band_name', 'genre' , 'email', 'password',];
+    protected $fillable = ['user_id', 'band_name', 'genre'];
 
     // A musician belongs to a user
     public function user()

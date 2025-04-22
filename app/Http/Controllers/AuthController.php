@@ -66,8 +66,6 @@ class AuthController extends Controller
                 'user_id' => $user->id,
                 'band_name' => $request->band_name,
                 'genre' => $request->genre,
-                'email' => $request->email,
-                'password' => Hash::make($request->password),
             ]);
 
             // Return success message
@@ -104,26 +102,24 @@ class AuthController extends Controller
             // Check if it's a musician login
             if ($request->is('login/musician')) {
                 Log::info('Attempting musician login');
-                $musician = Musician::where('email', $request->email)->first();
+                $user = User::where('email', $request->email)->first();
 
-                if (!$musician) {
-                    Log::warning('No musician found with email: ' . $request->email);
-                    return response()->json(['error' => 'No musician account found with this email'], 401);
+                if (!$user) {
+                    Log::warning('No user found with email: ' . $request->email);
+                    return response()->json(['error' => 'No account found with this email'], 401);
                 }
 
-                Log::info('Found musician:', ['id' => $musician->id, 'email' => $musician->email]);
-
-                if (!Hash::check($request->password, $musician->password)) {
-                    Log::warning('Invalid password for musician: ' . $musician->email);
+                if (!Hash::check($request->password, $user->password)) {
+                    Log::warning('Invalid password for user: ' . $user->email);
                     return response()->json(['error' => 'Invalid password'], 401);
                 }
 
-                // Get associated user data
-                $user = User::find($musician->user_id);
+                // Get associated musician data
+                $musician = Musician::where('user_id', $user->id)->first();
 
-                if (!$user) {
-                    Log::error('Associated user not found for musician: ' . $musician->id);
-                    return response()->json(['error' => 'Associated user account not found'], 401);
+                if (!$musician) {
+                    Log::error('Associated musician not found for user: ' . $user->id);
+                    return response()->json(['error' => 'Associated musician account not found'], 401);
                 }
 
                 Log::info('Musician login successful:', ['musician_id' => $musician->id, 'user_id' => $user->id]);

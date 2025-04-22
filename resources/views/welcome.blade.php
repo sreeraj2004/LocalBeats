@@ -25,6 +25,7 @@
         <button id="loginBtn" class="login-btn">Log In</button>
         <button id="signupBtn" class="signup-btn">Sign Up</button>
         <button id="dashboardBtn" class="dashboard-btn" style="display: none;">Dashboard</button>
+        <button id="navLogoutBtn" class="logout-btn" style="display: none;">Logout</button>
     </div>
 
   </nav>
@@ -69,7 +70,7 @@
         <button id="addEventBtn" style="display: none;" class="dashboard-btn"><span style="margin-right: 8px;">🎉</span>Add Event   </button>
         <button id="addMusicBtn" style="display: none;" class="dashboard-btn"><span style="margin-right: 8px;">🎵</span>Add Music</button>
 
-        <button id="logoutBtn">Logout</button>
+        <button id="dashboardLogoutBtn">Logout</button>
     </div>
 
      
