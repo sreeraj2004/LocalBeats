@@ -85,4 +85,40 @@ class MusicController extends Controller
         
         return view('pages.about', compact('musicians', 'currentMusician'));
     }
+
+    public function updateProfilePhoto(Request $request)
+    {
+        try {
+            $request->validate([
+                'profile_photo' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048'
+            ]);
+
+            $user = auth()->user();
+            if (!$user) {
+                return response()->json(['success' => false, 'message' => 'User not authenticated'], 401);
+            }
+
+            if ($request->hasFile('profile_photo')) {
+                $file = $request->file('profile_photo');
+                $filename = time() . '_' . $file->getClientOriginalName();
+                
+                // Store the file in the public/profile_photos directory
+                $file->move(public_path('profile_photos'), $filename);
+                
+                // Update the user's profile_photo field in the database
+                $user->profile_photo = 'profile_photos/' . $filename;
+                $user->save();
+
+                return response()->json([
+                    'success' => true,
+                    'message' => 'Profile photo updated successfully',
+                    'photo_url' => asset($user->profile_photo)
+                ]);
+            }
+
+            return response()->json(['success' => false, 'message' => 'No file uploaded'], 400);
+        } catch (\Exception $e) {
+            return response()->json(['success' => false, 'message' => $e->getMessage()], 500);
+        }
+    }
 }

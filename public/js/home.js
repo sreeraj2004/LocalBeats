@@ -597,3 +597,39 @@ document.addEventListener('DOMContentLoaded', function() {
     });
   });
 });
+
+function handleProfilePhotoUpload(event) {
+    event.preventDefault();
+    const fileInput = document.getElementById('profile-photo-input');
+    const file = fileInput.files[0];
+
+    if (!file) {
+        alert('Please select a file to upload');
+        return;
+    }
+
+    const formData = new FormData();
+    formData.append('profile_photo', file);
+
+    fetch('/update-profile-photo', {
+        method: 'POST',
+        body: formData,
+        headers: {
+            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
+        }
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            alert('Profile photo updated successfully');
+            // Refresh the page to show the new photo
+            window.location.reload();
+        } else {
+            alert(data.message || 'Error updating profile photo');
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        alert('Error updating profile photo');
+    });
+}

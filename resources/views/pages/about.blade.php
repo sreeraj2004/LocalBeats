@@ -10,7 +10,17 @@
     @if(session()->has('user_id') && $currentMusician)
         <div class="profile-card">
             <div class="profile-avatar">
-                <i class="fas fa-user-circle"></i>
+                @if($currentMusician && $currentMusician->profile_photo)
+                    <img src="{{ asset('images/profile/' . $currentMusician->profile_photo) }}" alt="Profile Photo" class="profile-image" onerror="this.onerror=null; this.src='{{ asset('images/default-profile.png') }}';">
+                @else
+                    <i class="fas fa-user-circle"></i>
+                @endif
+                <div class="avatar-overlay">
+                    <label for="profile_photo" class="change-photo-btn">
+                        <i class="fas fa-camera"></i>
+                    </label>
+                    <input type="file" id="profile_photo" name="profile_photo" accept="image/*" style="display: none;">
+                </div>
             </div>
             <h2>{{ $currentMusician->user->name }}</h2>
             <p class="musician-label">Musician</p>
@@ -110,6 +120,7 @@
 }
 
 .profile-avatar {
+    position: relative;
     width: 100px;
     height: 100px;
     margin: 0 auto 1rem;
@@ -118,6 +129,40 @@
     display: flex;
     align-items: center;
     justify-content: center;
+    overflow: hidden;
+}
+
+.profile-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.avatar-overlay {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: rgba(0, 0, 0, 0.5);
+    padding: 0.5rem;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.profile-avatar:hover .avatar-overlay {
+    opacity: 1;
+}
+
+.change-photo-btn {
+    color: white;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.change-photo-btn i {
+    font-size: 1.2rem;
 }
 
 .profile-avatar i {
@@ -247,4 +292,117 @@
     background: #0056b3;
 }
 </style>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const profilePhotoInput = document.getElementById('profile_photo');
+    const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+    
+    if (profilePhotoInput) {
+        profilePhotoInput.addEventListener('change', function() {
+            // Check if user is logged in
+            if (!sessionStorage.getItem('userType')) {
+                alert('Please log in to update your profile photo.');
+                this.value = ''; // Clear the input
+                window.location.href = '/login';
+                return;
+            }
+
+            const file = this.files[0];
+            
+            // Validate file before uploading
+            if (file) {
+                // Check file size (max 2MB)
+                if (file.size > 2 * 1024 * 1024) {
+                    alert('File is too large. Maximum size is 2MB.');
+                    this.value = ''; // Clear the input
+                    return;
+                }
+                
+                // Check file type
+                const validTypes = ['image/jpeg', 'image/png', 'image/jpg', 'image/gif'];
+                if (!validTypes.includes(file.type)) {
+                    alert('Invalid file type. Please upload a JPEG, PNG, or GIF image.');
+                    this.value = ''; // Clear the input
+                    return;
+                }
+
+                const formData = new FormData();
+                formData.append('profile_photo', file);
+                
+                // Show loading state
+                const profileImage = document.querySelector('.profile-image');
+                if (profileImage) {
+                    profileImage.style.opacity = '0.5';
+                }
+                
+                fetch('/update-profile-photo', {
+                    method: 'POST',
+                    body: formData,
+                    headers: {
+                        'X-CSRF-TOKEN': csrfToken,
+                        'Accept': 'application/json'
+                    },
+                    credentials: 'same-origin'
+                })
+                .then(response => {
+                    if (!response.ok) {
+                        return response.text().then(text => {
+                            try {
+                                // Try to parse as JSON first
+                                const json = JSON.parse(text);
+                                throw new Error(json.message || 'Error updating profile photo');
+                            } catch (e) {
+                                // If not JSON, check specific error cases
+                                if (response.status === 401) {
+                                    // Unauthorized - need to log in again
+                                    sessionStorage.clear();
+                                    window.location.href = '/login';
+                                    throw new Error('Please log in to update your profile photo.');
+                                } else if (response.status === 419) {
+                                    throw new Error('Session expired. Please refresh the page and try again.');
+                                } else if (response.status === 413) {
+                                    throw new Error('The file is too large. Maximum size is 2MB.');
+                                } else if (response.status === 422) {
+                                    throw new Error('Invalid file type. Please upload a JPEG, PNG, or GIF image.');
+                                } else {
+                                    console.error('Server response:', text);
+                                    throw new Error('Server error. Please try again later.');
+                                }
+                            }
+                        });
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    if (data.success) {
+                        // Update the profile image immediately
+                        const profileImage = document.querySelector('.profile-image');
+                        if (profileImage) {
+                            profileImage.src = data.photo_url;
+                            profileImage.style.opacity = '1';
+                        }
+                        alert('Profile photo updated successfully');
+                    } else {
+                        throw new Error(data.message || 'Error updating profile photo');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    // Reset loading state
+                    const profileImage = document.querySelector('.profile-image');
+                    if (profileImage) {
+                        profileImage.style.opacity = '1';
+                    }
+                    alert(error.message || 'Error updating profile photo');
+                })
+                .finally(() => {
+                    // Clear the input to allow uploading the same file again
+                    this.value = '';
+                });
+            }
+        });
+    }
+});
+</script>
 @endsection 

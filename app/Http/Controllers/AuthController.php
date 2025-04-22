@@ -163,4 +163,12 @@ class AuthController extends Controller
             return response()->json(['error' => 'Login failed. Please try again.'], 500);
         }
     }
+
+    public function showLoginForm()
+    {
+        if (auth()->check()) {
+            return redirect()->route('home');
+        }
+        return redirect()->route('home')->with('showLogin', true);
+    }
 }
