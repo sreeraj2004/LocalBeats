@@ -129,21 +129,18 @@
   <section class="featured-music-section">
     <h2 class="section-title">Featured Musicians</h2>
     <div class="music-grid">
-    @foreach($featuredMusic as $index => $music)
-        <div class="music-card {{ $index >= 3 ? 'hidden-item' : '' }}">
-        <img src="{{ asset($music->image) }}" alt="Cover for {{ $music->artist_name }}" />
-        <h3>{{ $music->artist_name }}</h3>
-        <p>Genre: {{ $music->genre }}</p>
-        <p>Rating: {{ $music->ratings }}/5</p>
-
-        <audio controls>
-        <source src="{{ asset($music->song_path) }}" type="audio/mpeg">
-        Your browser does not support the audio element.
-        </audio>
+    @foreach($music as $track)
+        <div class="music-card">
+            <h3>{{ $track->title }}</h3>
+            <p>{{ $track->description }}</p>
+            <audio controls>
+                <source src="{{ asset('storage/' . $track->file_path) }}" type="audio/mpeg">
+                Your browser does not support the audio element.
+            </audio>
         </div>
     @endforeach
     </div>
-    @if(count($featuredMusic) > 3)
+    @if(count($music) > 3)
     <p class="toggle-btn" id="musicToggleBtn" style="color: blue; text-align: center; cursor: pointer; margin-top: 20px;">Show More</p>
     @endif
     </section>
@@ -152,19 +149,15 @@
     <section class="Upcoming-events">
         <h2 class="section-title">Upcoming Events</h2>
         <div class="event-grid">
-        @foreach($upcomingEvents as $index => $event)
-            <div class="event-card {{ $index >= 3 ? 'hidden-item' : '' }}">
-                <img src="{{ asset($event->image) }}" alt="Event Image" />
-                <h3>{{ $event->name }}</h3>                
-                <p><i class="fas fa-calendar-alt"></i> {{ $event->date }}</p>
-                <p><i class="fas fa-map-marker-alt"></i> {{ $event->location }}</p>
-                <p><i class="fas fa-clock"></i> {{ $event->time }}</p>
-                <p><i class="fas fa-dollar-sign"></i> {{ $event->price }}</p>
-                <button class="event-btn" >Book Tickets</button>
+        @foreach($events as $event)
+            <div class="event-card">
+                <h3>{{ $event->title }}</h3>
+                <p>{{ $event->description }}</p>
+                <p>Date: {{ $event->date }}</p>
             </div>
         @endforeach
         </div>
-        @if(count($upcomingEvents) > 3)
+        @if(count($events) > 3)
         <p class="toggle-btn" id="eventToggleBtn" style="color: blue; text-align: center; cursor: pointer; margin-top: 20px;">Show More</p>
         @endif
     </section>

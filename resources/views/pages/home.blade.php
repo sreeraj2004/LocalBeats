@@ -7,14 +7,16 @@
         <p>Discover and share local music events</p>
     </div>
 
-    <div class="buttons">
-        <button id="addEventBtn" class="btn-primary">
-            <i class="fas fa-calendar-plus"></i> Add Event
-        </button>
-        <button id="addMusicBtn" class="btn-primary">
-            <i class="fas fa-music"></i> Add Music
-        </button>
-    </div>
+    @if(session()->has('user_id') && $currentMusician)
+        <div class="buttons">
+            <button id="addEventBtn" class="btn-primary">
+                <i class="fas fa-calendar-plus"></i> Add Event
+            </button>
+            <button id="addMusicBtn" class="btn-primary">
+                <i class="fas fa-music"></i> Add Music
+            </button>
+        </div>
+    @endif
 
     <div class="events-section">
         <h2>Upcoming Events</h2>

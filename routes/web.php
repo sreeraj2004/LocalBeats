@@ -15,10 +15,10 @@ use App\Http\Controllers\UploadController;
 |
 */
 
-
-
-Route::get('/' , [MusicController::class, 'index']);
-Route::get('/home', [MusicController::class, 'index'])->name('home');
+// Main Routes
+//Route::redirect('/home', '/');
+Route::get('/', [MusicController::class, 'index'])->name('welcome');
+Route::get('/home', [MusicController::class, 'home'])->name('home');
 Route::get('/musicians', [MusicController::class, 'musicians'])->name('musicians');
 Route::get('/events', [MusicController::class, 'events'])->name('events');
 Route::get('/music', [MusicController::class, 'music'])->name('music');
@@ -38,12 +38,4 @@ Route::middleware(['web'])->group(function () {
     Route::post('/upload-music', [UploadController::class, 'uploadMusic']);
     Route::post('/upload-event', [UploadController::class, 'uploadEvent']);
 });
-
-// Public Routes
-Route::get('/', [MusicController::class, 'index']);
-Route::get('/home', [MusicController::class, 'home'])->name('home');
-Route::get('/musicians', [MusicController::class, 'musicians'])->name('musicians');
-Route::get('/events', [MusicController::class, 'events'])->name('events');
-Route::get('/music', [MusicController::class, 'music'])->name('music');
-Route::get('/about', [MusicController::class, 'about'])->name('about');
 

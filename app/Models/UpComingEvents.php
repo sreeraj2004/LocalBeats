@@ -16,4 +16,9 @@ class UpComingEvents extends Model
         'time',
         'price',
     ];
+
+    protected $casts = [
+        'date' => 'date',
+        'price' => 'float',
+    ];
 }

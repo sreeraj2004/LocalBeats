@@ -13,21 +13,38 @@ class MusicController extends Controller
 {
     //
     public function index(){
-        $featuredMusic = FeaturedMusic::all();
-        $upcomingEvents = UpcomingEvents::all();
-        return view('welcome', compact('featuredMusic', 'upcomingEvents'));
+        $events = UpcomingEvents::orderBy('date', 'asc')->get();
+        $music = FeaturedMusic::orderBy('created_at', 'desc')->get();
+        
+        // Get current user's musician profile if logged in
+        $currentMusician = null;
+        if (session()->has('user_id')) {
+            $currentMusician = Musician::where('user_id', session('user_id'))->first();
+        }
+        
+        return view('welcome', compact('events', 'music', 'currentMusician'));
     }
 
     public function home()
     {
         $events = UpcomingEvents::orderBy('date', 'asc')->get();
-        $music = FeaturedMusic::with('musician')->orderBy('created_at', 'desc')->get();
-        return view('pages.home', compact('events', 'music'));
+        $music = FeaturedMusic::orderBy('created_at', 'desc')->get();
+        
+        // Get current user's musician profile if logged in
+        $currentMusician = null;
+        if (session()->has('user_id')) {
+            $currentMusician = Musician::where('user_id', session('user_id'))->first();
+        }
+        
+        return view('pages.home', compact('events', 'music', 'currentMusician'));
     }
 
     public function musicians()
     {
-        return view('pages.musicians');
+        // Get all musicians with their user data and relationships
+        $musicians = Musician::with(['user', 'featured_music', 'upcoming_events'])->get();
+        
+        return view('pages.musicians', compact('musicians'));
     }
 
     public function events()
