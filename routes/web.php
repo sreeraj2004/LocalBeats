@@ -18,6 +18,11 @@ use App\Http\Controllers\UploadController;
 
 
 Route::get('/' , [MusicController::class, 'index']);
+Route::get('/home', [MusicController::class, 'index'])->name('home');
+Route::get('/musicians', [MusicController::class, 'musicians'])->name('musicians');
+Route::get('/events', [MusicController::class, 'events'])->name('events');
+Route::get('/music', [MusicController::class, 'music'])->name('music');
+Route::get('/about', [MusicController::class, 'about'])->name('about');
 Route::post('/register/user', [AuthController::class, 'registerUser']);
 Route::post('/register/musician', [AuthController::class, 'registerMusician']);
 Route::post('/login/user', [AuthController::class, 'login']);

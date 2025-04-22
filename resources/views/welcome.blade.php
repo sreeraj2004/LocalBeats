@@ -16,10 +16,11 @@
     <div class="logo"><img class="logo-img" src="{{ asset('images/logo.webp') }}" alt="LocalBeats Logo">  LocalBeats</div>
     
     <ul class="nav-links">
-      <li><a href="#">Home</a></li>
-      <li><a href="#">Musicians</a></li>
-      <li><a href="#">Events</a></li>
-      <li><a href="#">About</a></li>
+      <li><a href="{{ url('/home') }}" class="nav-link home-link">Home</a></li>
+      <li><a href="{{ url('/musicians') }}" class="nav-link musicians-link">Musicians</a></li>
+      <li><a href="{{ url('/events') }}" class="nav-link events-link">Events</a></li>
+      <li><a href="{{ url('/music') }}" class="nav-link music-link">Music</a></li>
+      <li><a href="{{ url('/about') }}" class="nav-link about-link">About</a></li>
     </ul>
     <div class="auth-buttons">
         <button id="loginBtn" class="login-btn">Log In</button>

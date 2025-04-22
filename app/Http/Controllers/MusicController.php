@@ -15,4 +15,29 @@ class MusicController extends Controller
         $upcomingEvents = UpcomingEvents::all();
         return view('welcome', compact('featuredMusic', 'upcomingEvents'));
     }
+
+    public function home()
+    {
+        return view('pages.home');
+    }
+
+    public function musicians()
+    {
+        return view('pages.musicians');
+    }
+
+    public function events()
+    {
+        return view('pages.events');
+    }
+
+    public function music()
+    {
+        return view('pages.music');
+    }
+
+    public function about()
+    {
+        return view('pages.about');
+    }
 }

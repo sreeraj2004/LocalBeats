@@ -35,6 +35,94 @@ document.addEventListener('DOMContentLoaded', function () {
   let currentMode = 'login';
   let currentType = 'User';
 
+  // Navigation links
+  const homeLink = document.querySelector('.home-link').parentElement;
+  const musiciansLink = document.querySelector('.musicians-link').parentElement;
+  const eventsLink = document.querySelector('.events-link').parentElement;
+  const musicLink = document.querySelector('.music-link').parentElement;
+  const aboutLink = document.querySelector('.about-link').parentElement;
+
+  // Add click event listeners to protected links
+  if (musiciansLink) {
+    musiciansLink.addEventListener('click', function(e) {
+      if (!sessionStorage.getItem('userType')) {
+        e.preventDefault();
+        alert('Please log in to access this page');
+        showPopup('login');
+      }
+    });
+  }
+
+  if (eventsLink) {
+    eventsLink.addEventListener('click', function(e) {
+      if (!sessionStorage.getItem('userType')) {
+        e.preventDefault();
+        alert('Please log in to access this page');
+        showPopup('login');
+      }
+    });
+  }
+
+  if (musicLink) {
+    musicLink.addEventListener('click', function(e) {
+      if (!sessionStorage.getItem('userType')) {
+        e.preventDefault();
+        alert('Please log in to access this page');
+        showPopup('login');
+      }
+    });
+  }
+
+  // Check authentication state on page load
+  function checkAuthState() {
+    const storedType = sessionStorage.getItem('userType');
+    if (storedType) {
+      // User is logged in
+      loginBtn.style.display = 'none';
+      signupBtn.style.display = 'none';
+      
+      if (storedType === 'Musician') {
+        dashboardBtn.style.display = 'inline-block';
+        navLogoutBtn.style.display = 'none';
+        if (addEventBtn) addEventBtn.style.display = 'block';
+        if (addMusicBtn) addMusicBtn.style.display = 'block';
+        
+        // Redirect musicians to about page if not already there
+        const currentPath = window.location.pathname;
+        if (currentPath !== '/about' && currentPath !== '/') {
+          window.location.href = '/about';
+          return; // Stop further execution
+        }
+      } else {
+        dashboardBtn.style.display = 'none';
+        navLogoutBtn.style.display = 'inline-block';
+        if (addEventBtn) addEventBtn.style.display = 'none';
+        if (addMusicBtn) addMusicBtn.style.display = 'none';
+      }
+      
+      // Update navigation based on user type
+      updateNavigation(storedType);
+    } else {
+      // User is not logged in
+      loginBtn.style.display = 'inline-block';
+      signupBtn.style.display = 'inline-block';
+      dashboardBtn.style.display = 'none';
+      navLogoutBtn.style.display = 'none';
+      if (addEventBtn) addEventBtn.style.display = 'none';
+      if (addMusicBtn) addMusicBtn.style.display = 'none';
+      
+      // Show all navigation links for non-logged in users
+      homeLink.style.display = 'block';
+      musiciansLink.style.display = 'block';
+      eventsLink.style.display = 'block';
+      musicLink.style.display = 'block';
+      aboutLink.style.display = 'block';
+    }
+  }
+
+  // Call checkAuthState on page load
+  checkAuthState();
+
   function showPopup(mode) {
     currentMode = mode;
     popupOverlay.style.display = 'flex';
@@ -160,6 +248,18 @@ document.addEventListener('DOMContentLoaded', function () {
             addEventBtn.style.display = 'none';
             addMusicBtn.style.display = 'none';
           }
+
+          // Update navigation after successful login
+          updateNavigation(currentType);
+          
+          // Redirect based on user type
+          if (currentType === 'Musician') {
+            // Redirect musicians to the about page
+            window.location.href = '/about';
+          } else {
+            // Regular users stay on the current page
+            // No redirect needed
+          }
         }
       })
       .catch(error => {
@@ -193,12 +293,23 @@ document.addEventListener('DOMContentLoaded', function () {
     loginBtn.style.display = 'inline-block';
     signupBtn.style.display = 'inline-block';
     sessionStorage.clear();
+    
+    // Reset navigation to default state
+    homeLink.style.display = 'block';
+    musiciansLink.style.display = 'block';
+    eventsLink.style.display = 'block';
+    musicLink.style.display = 'block';
+    aboutLink.style.display = 'block';
+    
     alert('You have been logged out.');
+    
+    // Redirect to home page after logout
+    window.location.href = '/home';
   }
 
   // Add click handlers for both logout buttons
-  navLogoutBtn.onclick = handleLogout;
-  dashboardLogoutBtn.onclick = handleLogout;
+  if (navLogoutBtn) navLogoutBtn.onclick = handleLogout;
+  if (dashboardLogoutBtn) dashboardLogoutBtn.onclick = handleLogout;
 
   addEventBtn.onclick = () => {
     document.body.classList.add('blurred');
@@ -343,6 +454,33 @@ document.addEventListener('DOMContentLoaded', function () {
       currentMode = 'signup';
       updateFormFields();
     });
+  }
+
+  // Function to update navigation based on user type
+  function updateNavigation(userType) {
+    if (userType === 'Musician') {
+      // Hide user-specific links
+      homeLink.style.display = 'none';
+      musiciansLink.style.display = 'none';
+      // Show musician-specific links
+      musicLink.style.display = 'block';
+      eventsLink.style.display = 'block';
+      aboutLink.style.display = 'block';
+    } else {
+      // Show user-specific links
+      homeLink.style.display = 'block';
+      musiciansLink.style.display = 'block';
+      eventsLink.style.display = 'block';
+      musicLink.style.display = 'block';
+      // Hide musician-specific links
+      aboutLink.style.display = 'none';
+    }
+  }
+
+  // Update navigation on page load if user is logged in
+  const storedType = sessionStorage.getItem('userType');
+  if (storedType) {
+    updateNavigation(storedType);
   }
 });
 
