@@ -9,10 +9,10 @@
         @foreach($musicians as $musician)
             <div class="musician-card">
                 <div class="musician-header">
-                    @if($musician->profile_image)
-                        <img src="{{ asset('storage/' . $musician->profile_image) }}" alt="{{ $musician->band_name }}" class="profile-photo" onerror="this.src='{{ asset('images/default-avatar.png') }}'">
+                    @if($musician->profile_photo)
+                        <img src="{{ asset('storage/' . $musician->profile_photo) }}" alt="{{ $musician->band_name }}" class="profile-photo" onerror="this.onerror=null; this.src='data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCI+PHBhdGggZmlsbD0iI2RkZCIgZD0iTTEyIDJDNi40OCAyIDIgNi40OCAyIDEyczQuNDggMTAgMTAgMTAgMTAtNC40OCAxMC0xMFMxNy41MiAyIDEyIDJ6bTAgM2MyLjY3IDAgNC44NCAyLjE3IDQuODQgNC44NCAwIDIuNjctMi4xNyA0Ljg0LTQuODQgNC44NC0yLjY3IDAtNC44NC0yLjE3LTQuODQtNC44NCAwLTIuNjcgMi4xNy00Ljg0IDQuODQtNC44NHptMCAxMmE5LjkxIDkuOTEgMCAwIDEtOC4xNi00LjQyYzAuMDQtLjExLjA5LS4yMS4xNS0uMzFDMi4yOSAxMyA0LjYxIDEzLjUgNyAxMy41YzIuNDkgMCA0LjgxLS41IDcuMTUtMS4yOS4wNi4xLjExLjIuMTUuMzFhOS45MSA5LjkxIDAgMCAxLTguMTYgNC40MnoiLz48L3N2Zz4=';">
                     @else
-                        <img src="{{ asset('images/default-avatar.png') }}" alt="Default Profile" class="profile-photo">
+                        <img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCI+PHBhdGggZmlsbD0iI2RkZCIgZD0iTTEyIDJDNi40OCAyIDIgNi40OCAyIDEyczQuNDggMTAgMTAgMTAgMTAtNC40OCAxMC0xMFMxNy41MiAyIDEyIDJ6bTAgM2MyLjY3IDAgNC44NCAyLjE3IDQuODQgNC44NCAwIDIuNjctMi4xNyA0Ljg0LTQuODQgNC44NC0yLjY3IDAtNC44NC0yLjE3LTQuODQtNC44NCAwLTIuNjcgMi4xNy00Ljg0IDQuODQtNC44NHptMCAxMmE5LjkxIDkuOTEgMCAwIDEtOC4xNi00LjQyYzAuMDQtLjExLjA5LS4yMS4xNS0uMzFDMi4yOSAxMyA0LjYxIDEzLjUgNyAxMy41YzIuNDkgMCA0LjgxLS41IDcuMTUtMS4yOS4wNi4xLjExLjIuMTUuMzFhOS45MSA5LjkxIDAgMCAxLTguMTYgNC40MnoiLz48L3N2Zz4=" alt="Default Profile" class="profile-photo">
                     @endif
                     <h2>{{ $musician->band_name }}</h2>
                     <p class="genre">{{ $musician->genre }}</p>

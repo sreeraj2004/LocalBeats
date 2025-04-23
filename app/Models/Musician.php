@@ -17,7 +17,7 @@ class Musician extends Model
         'genre',
         'bio',
         'location',
-        'profile_image'
+        'profile_photo'
     ];
 
     // A musician belongs to a user
