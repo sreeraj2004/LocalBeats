@@ -108,7 +108,7 @@
                 </div>
                 <div class="form-group">
                     <label for="musicFile">Select Music File (MP3 or WAV)</label>
-                    <input type="file" class="form-control" id="musicFile" name="music_file" accept="audio/mp3,audio/wav" required />
+                    <input type="file" class="form-control" id="musicFile" name="file" accept="audio/mp3,audio/wav" required />
                 </div>
                 <div class="form-group">
                     <label for="musicCoverImage">Cover Image (Optional)</label>

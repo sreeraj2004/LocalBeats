@@ -457,31 +457,6 @@ document.addEventListener('DOMContentLoaded', function () {
     musicForm.addEventListener('submit', function(e) {
       e.preventDefault();
       
-      const currentMusicFileInput = document.getElementById('musicFile');
-      console.log('Current music file input on submit:', currentMusicFileInput);
-      
-      if (!currentMusicFileInput) {
-        console.error('Music file input not found on submit');
-        alert('Error: Music file input not found. Please try again.');
-        return;
-      }
-      
-      // Check if a file is selected
-      if (!currentMusicFileInput.files || !currentMusicFileInput.files.length) {
-        alert('Please select a music file to upload');
-        return;
-      }
-
-      // Validate file type
-      const file = currentMusicFileInput.files[0];
-      const validTypes = ['audio/mp3', 'audio/mpeg', 'audio/wav', 'audio/x-wav', 'audio/wave'];
-      const fileExtension = file.name.split('.').pop().toLowerCase();
-      
-      if (!validTypes.includes(file.type) && !['mp3', 'wav'].includes(fileExtension)) {
-        alert('Please select a valid audio file (MP3 or WAV)');
-        return;
-      }
-      
       const formData = new FormData(musicForm);
       
       // Log form data for debugging
@@ -495,8 +470,10 @@ document.addEventListener('DOMContentLoaded', function () {
         body: formData,
         headers: {
           'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
+          'X-Requested-With': 'XMLHttpRequest',
           'Accept': 'application/json'
-        }
+        },
+        credentials: 'same-origin'
       })
       .then(response => {
         console.log('Response status:', response.status);
