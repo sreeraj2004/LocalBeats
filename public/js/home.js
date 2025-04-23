@@ -465,7 +465,7 @@ document.addEventListener('DOMContentLoaded', function () {
           'X-Requested-With': 'XMLHttpRequest',
           'Accept': 'application/json'
         },
-        credentials: 'same-origin'
+        credentials: 'include'
       })
       .then(response => {
         console.log('Response status:', response.status);

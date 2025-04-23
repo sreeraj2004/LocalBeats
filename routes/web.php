@@ -25,9 +25,8 @@ Route::get('/events', [MusicController::class, 'events'])->name('events');
 Route::get('/music', [MusicController::class, 'music'])->name('music');
 Route::get('/about', [MusicController::class, 'about'])->name('about');
 
-// Protected Routes - Require Authentication
-Route::middleware(['auth'])->group(function () {
-    // Protected Upload Routes
+// Session-based Protected Routes
+Route::middleware(['web'])->group(function () {
     Route::post('/update-profile-photo', [UploadController::class, 'updateProfilePhoto'])->name('update.profile.photo');
     Route::post('/upload-music', [UploadController::class, 'uploadMusic']);
     Route::post('/upload-event', [UploadController::class, 'uploadEvent']);
