@@ -11,15 +11,15 @@
         <div class="profile-card">
             <div class="profile-avatar">
                 @if($currentMusician && $currentMusician->profile_photo)
-                    <img src="{{ asset('images/profile/' . $currentMusician->profile_photo) }}" alt="Profile Photo" class="profile-image" onerror="this.onerror=null; this.src='{{ asset('images/default-profile.png') }}';">
+                    <img src="{{ asset('storage/' . $currentMusician->profile_photo) }}" alt="Profile Photo" class="profile-image" onerror="this.onerror=null; this.src='data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCI+PHBhdGggZmlsbD0iI2RkZCIgZD0iTTEyIDJDNi40OCAyIDIgNi40OCAyIDEyczQuNDggMTAgMTAgMTAgMTAtNC40OCAxMC0xMFMxNy41MiAyIDEyIDJ6bTAgM2MyLjY3IDAgNC44NCAyLjE3IDQuODQgNC44NCAwIDIuNjctMi4xNyA0Ljg0LTQuODQgNC44NC0yLjY3IDAtNC44NC0yLjE3LTQuODQtNC44NCAwLTIuNjcgMi4xNy00Ljg0IDQuODQtNC44NHptMCAxMmE5LjkxIDkuOTEgMCAwIDEtOC4xNi00LjQyYzAuMDQtLjExLjA5LS4yMS4xNS0uMzFDMi4yOSAxMyA0LjYxIDEzLjUgNyAxMy41YzIuNDkgMCA0LjgxLS41IDcuMTUtMS4yOS4wNi4xLjExLjIuMTUuMzFhOS45MSA5LjkxIDAgMCAxLTguMTYgNC40MnoiLz48L3N2Zz4=';">
                 @else
                     <i class="fas fa-user-circle"></i>
                 @endif
                 <div class="avatar-overlay">
-                    <label for="profile_photo" class="change-photo-btn">
+                    <label for="profile-photo-input" class="change-photo-btn">
                         <i class="fas fa-camera"></i>
                     </label>
-                    <input type="file" id="profile_photo" name="profile_photo" accept="image/*" style="display: none;">
+                    <input type="file" id="profile-photo-input" name="profile_photo" accept="image/*" style="display: none;">
                 </div>
             </div>
             <h2>{{ $currentMusician->user->name }}</h2>
@@ -295,7 +295,7 @@
 
 <script>
 document.addEventListener('DOMContentLoaded', function() {
-    const profilePhotoInput = document.getElementById('profile_photo');
+    const profilePhotoInput = document.getElementById('profile-photo-input');
     const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
     
     if (profilePhotoInput) {

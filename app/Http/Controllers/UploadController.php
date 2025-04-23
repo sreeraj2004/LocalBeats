@@ -148,8 +148,12 @@ class UploadController extends Controller
                 // Store the file in the storage/app/public/profile_photos directory
                 $path = $request->file('profile_photo')->storeAs('profile_photos', $filename, 'public');
                 
+                if (!$path) {
+                    throw new \Exception('Failed to store the file');
+                }
+                
                 // Update the database
-                $musician->profile_image = $path;
+                $musician->profile_photo = $path;
                 $musician->save();
 
                 return response()->json([
@@ -164,7 +168,7 @@ class UploadController extends Controller
             \Log::error('Profile photo update error: ' . $e->getMessage());
             return response()->json([
                 'success' => false, 
-                'message' => 'Error updating profile photo. Please try again.'
+                'message' => $e->getMessage()
             ], 500);
         }
     }
