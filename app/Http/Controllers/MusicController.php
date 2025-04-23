@@ -13,8 +13,8 @@ class MusicController extends Controller
 {
     //
     public function index(){
-        $events = UpcomingEvents::orderBy('date', 'asc')->get();
-        $music = FeaturedMusic::orderBy('created_at', 'desc')->get();
+        $events = UpcomingEvents::with('musician')->orderBy('date', 'asc')->get();
+        $music = FeaturedMusic::with('musician')->orderBy('created_at', 'desc')->get();
         
         // Get current user's musician profile if logged in
         $currentMusician = null;

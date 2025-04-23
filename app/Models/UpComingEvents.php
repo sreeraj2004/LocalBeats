@@ -21,4 +21,9 @@ class UpComingEvents extends Model
         'date' => 'date',
         'price' => 'float',
     ];
+
+    public function musician()
+    {
+        return $this->belongsTo(Musician::class);
+    }
 }

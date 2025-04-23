@@ -131,10 +131,16 @@
     <div class="music-grid">
     @foreach($music as $track)
         <div class="music-card">
-            <h3>{{ $track->title }}</h3>
-            <p>{{ $track->description }}</p>
+            @if($track->image)
+                <img src="{{ asset('storage/' . $track->image) }}" alt="{{ $track->artist_name }}" class="music-cover">
+            @else
+                <img src="{{ asset('images/default-music-cover.jpg') }}" alt="Default Cover" class="music-cover">
+            @endif
+            <h3>{{ $track->artist_name }}</h3>
+            <p>By: {{ $track->musician->user->name }}</p>
+            <p>Genre: {{ $track->genre }}</p>
             <audio controls>
-                <source src="{{ asset('storage/' . $track->file_path) }}" type="audio/mpeg">
+                <source src="{{ asset('storage/' . $track->song_path) }}" type="audio/mpeg">
                 Your browser does not support the audio element.
             </audio>
         </div>
@@ -151,9 +157,17 @@
         <div class="event-grid">
         @foreach($events as $event)
             <div class="event-card">
-                <h3>{{ $event->title }}</h3>
-                <p>{{ $event->description }}</p>
-                <p>Date: {{ $event->date }}</p>
+                @if($event->image)
+                    <img src="{{ asset('storage/' . $event->image) }}" alt="{{ $event->name }}" class="event-image">
+                @else
+                    <img src="{{ asset('images/default-event-image.jpg') }}" alt="Default Event Image" class="event-image">
+                @endif
+                <h3>{{ $event->name }}</h3>
+                <p>By: {{ $event->musician->user->name }}</p>
+                <p>Date: {{ $event->date->format('M d, Y') }}</p>
+                <p>Time: {{ $event->time }}</p>
+                <p>Location: {{ $event->location }}</p>
+                <p>Price: ${{ number_format($event->price, 2) }}</p>
             </div>
         @endforeach
         </div>
