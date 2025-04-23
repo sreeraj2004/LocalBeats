@@ -8,6 +8,7 @@
         </div>
         <h2 id="formTitle">User Login</h2>
         <form id="authForm" method="POST">
+            @csrf
             <input type="hidden" name="_token" value="{{ csrf_token() }}">
 
             <input type="text" id="nameField" name="name" placeholder="Name" style="display: none;">

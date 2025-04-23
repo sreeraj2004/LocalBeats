@@ -281,91 +281,59 @@ document.addEventListener('DOMContentLoaded', function () {
     updateForm();
   };
 
-  submitBtn.addEventListener('click', function (e) {
+  // Form submission handler
+  form.addEventListener('submit', function(e) {
     e.preventDefault();
-
-    if (currentMode === 'signup' && passwordField.value !== confirmPasswordField.value) {
-      alert('The password confirmation does not match.');
-      return;
-    }
-
-    if (currentMode === 'signup' && currentType === 'User') {
-      form.action = '/register/user';
-    } else if (currentMode === 'signup' && currentType === 'Musician') {
-      form.action = '/register/musician';
-    } else if (currentMode === 'login' && currentType === 'User') {
-      form.action = '/login/user';
-    } else if (currentMode === 'login' && currentType === 'Musician') {
-      form.action = '/login/musician';
-    }
-
+    
     const formData = new FormData(form);
-
-    fetch(form.action, {
+    let action;
+    
+    if (currentMode === 'login') {
+      action = currentType === 'User' ? '/login/user' : '/login/musician';
+    } else {
+      action = currentType === 'User' ? '/register/user' : '/register/musician';
+    }
+    
+    // Log the form data for debugging
+    console.log('Submitting form data:');
+    for (let pair of formData.entries()) {
+      console.log(pair[0] + ': ' + pair[1]);
+    }
+    
+    fetch(action, {
       method: 'POST',
       body: formData,
       headers: {
-        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
         'Accept': 'application/json'
       }
     })
-      .then(response => {
-        const contentType = response.headers.get('content-type');
-        if (!contentType || !contentType.includes('application/json')) {
-          throw new Error('Server returned non-JSON response. Please try again or contact support.');
+    .then(response => {
+      console.log('Response status:', response.status);
+      if (!response.ok) {
+        return response.json().then(data => {
+          console.error('Error response:', data);
+          throw new Error(data.message || 'Network response was not ok');
+        });
+      }
+      return response.json();
+    })
+    .then(data => {
+      if (data.success || data.message) {
+        sessionStorage.setItem('userType', currentType);
+        sessionStorage.setItem('userName', data.user?.name || '');
+        if (data.isMusician) {
+          sessionStorage.setItem('musicianId', data.musician?.id || '');
         }
-        if (!response.ok) {
-          return response.json().then(data => {
-            throw new Error(data.error || 'Network response was not ok');
-          });
-        }
-        return response.json();
-      })
-      .then(data => {
-        if (data.errors || data.error) {
-          alert(Object.values(data.errors || data.error).flat().join('\n'));
-        } else {
-          alert(data.message || 'Form submitted successfully!');
-          popupOverlay.style.display = 'none';
-          form.reset();
-
-          loginBtn.style.display = 'none';
-          signupBtn.style.display = 'none';
-          
-          if (currentType === 'Musician') {
-            dashboardBtn.style.display = 'inline-block';
-            navLogoutBtn.style.display = 'none';
-          } else {
-            dashboardBtn.style.display = 'none';
-            navLogoutBtn.style.display = 'inline-block';
-          }
-
-          sessionStorage.setItem('userType', currentType);
-          sessionStorage.setItem('userName', data.user?.name || '');
-          if (data.isMusician) {
-            sessionStorage.setItem('musicianId', data.musician?.id || '');
-            addEventBtn.style.display = 'block';
-            addMusicBtn.style.display = 'block';
-          } else {
-            addEventBtn.style.display = 'none';
-            addMusicBtn.style.display = 'none';
-          }
-
-          // Update navigation after successful login
-          updateNavigation(currentType);
-          
-          // Redirect based on user type
-          if (currentType === 'Musician') {
-            window.location.href = '/about';
-          } else {
-            window.location.href = '/home';
-          }
-        }
-      })
-      .catch(error => {
-        console.error('Error:', error);
-        alert('There was an error submitting the form: ' + error.message);
-      });
+        hidePopup('popupOverlay');
+        checkAuthState();
+      } else {
+        alert(data.message || 'An error occurred');
+      }
+    })
+    .catch(error => {
+      console.error('Error:', error);
+      alert(error.message || 'An error occurred. Please try again.');
+    });
   });
 
   dashboardBtn.onclick = () => {
