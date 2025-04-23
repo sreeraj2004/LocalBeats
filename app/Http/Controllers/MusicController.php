@@ -22,21 +22,12 @@ class MusicController extends Controller
             $currentMusician = Musician::where('user_id', session('user_id'))->first();
         }
         
-        return view('welcome', compact('events', 'music', 'currentMusician'));
+        return view('home', compact('events', 'music', 'currentMusician'));
     }
 
     public function home()
     {
-        $events = UpcomingEvents::orderBy('date', 'asc')->get();
-        $music = FeaturedMusic::orderBy('created_at', 'desc')->get();
-        
-        // Get current user's musician profile if logged in
-        $currentMusician = null;
-        if (session()->has('user_id')) {
-            $currentMusician = Musician::where('user_id', session('user_id'))->first();
-        }
-        
-        return view('pages.home', compact('events', 'music', 'currentMusician'));
+        return $this->index();
     }
 
     public function musicians()

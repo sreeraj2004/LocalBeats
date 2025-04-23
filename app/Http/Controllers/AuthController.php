@@ -131,7 +131,8 @@ class AuthController extends Controller
                     'message' => 'Login successful',
                     'user' => $user,
                     'musician' => $musician,
-                    'isMusician' => true
+                    'isMusician' => true,
+                    'redirect' => '/'
                 ]);
             }
 
@@ -156,7 +157,8 @@ class AuthController extends Controller
 
             return response()->json([
                 'message' => 'Login successful',
-                'user' => $user
+                'user' => $user,
+                'redirect' => '/'
             ]);
         } catch (\Exception $e) {
             Log::error('Login error: ' . $e->getMessage());
@@ -167,8 +169,15 @@ class AuthController extends Controller
     public function showLoginForm()
     {
         if (auth()->check()) {
-            return redirect()->route('home');
+            return redirect('/');
         }
-        return redirect()->route('home')->with('showLogin', true);
+        return redirect('/')->with('showLogin', true);
+    }
+
+    public function logout()
+    {
+        session()->forget('user_id');
+        session()->flush();
+        return redirect('/');
     }
 }

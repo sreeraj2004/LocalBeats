@@ -294,12 +294,6 @@ document.addEventListener('DOMContentLoaded', function () {
       action = currentType === 'User' ? '/register/user' : '/register/musician';
     }
     
-    // Log the form data for debugging
-    console.log('Submitting form data:');
-    for (let pair of formData.entries()) {
-      console.log(pair[0] + ': ' + pair[1]);
-    }
-    
     fetch(action, {
       method: 'POST',
       body: formData,
@@ -308,24 +302,22 @@ document.addEventListener('DOMContentLoaded', function () {
       }
     })
     .then(response => {
-      console.log('Response status:', response.status);
       if (!response.ok) {
         return response.json().then(data => {
-          console.error('Error response:', data);
-          throw new Error(data.message || 'Network response was not ok');
+          throw new Error(data.message || 'Login failed');
         });
       }
       return response.json();
     })
     .then(data => {
-      if (data.success || data.message) {
+      if (data.message === 'Login successful') {
         sessionStorage.setItem('userType', currentType);
-        sessionStorage.setItem('userName', data.user?.name || '');
+        sessionStorage.setItem('userName', data.user.name);
         if (data.isMusician) {
-          sessionStorage.setItem('musicianId', data.musician?.id || '');
+          sessionStorage.setItem('musicianId', data.musician.id);
         }
         hidePopup('popupOverlay');
-        checkAuthState();
+        window.location.href = data.redirect || '/';
       } else {
         alert(data.message || 'An error occurred');
       }
@@ -355,24 +347,24 @@ document.addEventListener('DOMContentLoaded', function () {
 
   // Function to handle logout
   function handleLogout() {
-    dashboardPanel.classList.remove('active');
-    dashboardBtn.style.display = 'none';
-    navLogoutBtn.style.display = 'none';
-    loginBtn.style.display = 'inline-block';
-    signupBtn.style.display = 'inline-block';
-    sessionStorage.clear();
-    
-    // Reset navigation to default state
-    homeLink.style.display = 'block';
-    musiciansLink.style.display = 'block';
-    eventsLink.style.display = 'block';
-    musicLink.style.display = 'block';
-    aboutLink.style.display = 'block';
-    
-    alert('You have been logged out.');
-    
-    // Redirect to home page after logout
-    window.location.href = '/home';
+    fetch('/logout', {
+      method: 'POST',
+      headers: {
+        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
+        'X-Requested-With': 'XMLHttpRequest',
+        'Accept': 'application/json'
+      },
+      credentials: 'same-origin'
+    })
+    .then(response => {
+      if (response.ok) {
+        sessionStorage.clear();
+        window.location.href = '/';
+      }
+    })
+    .catch(error => {
+      console.error('Logout error:', error);
+    });
   }
 
   // Add click handlers for both logout buttons

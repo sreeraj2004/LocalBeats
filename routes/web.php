@@ -16,13 +16,22 @@ use App\Http\Controllers\UploadController;
 */
 
 // Main Routes
-//Route::redirect('/home', '/');
 Route::get('/', [MusicController::class, 'index'])->name('welcome');
-Route::get('/home', [MusicController::class, 'home'])->name('home');
+Route::get('/home', [MusicController::class, 'index'])->name('home');
+
+// Public Routes
 Route::get('/musicians', [MusicController::class, 'musicians'])->name('musicians');
 Route::get('/events', [MusicController::class, 'events'])->name('events');
 Route::get('/music', [MusicController::class, 'music'])->name('music');
 Route::get('/about', [MusicController::class, 'about'])->name('about');
+
+// Protected Routes - Require Authentication
+Route::middleware(['auth'])->group(function () {
+    // Protected Upload Routes
+    Route::post('/update-profile-photo', [UploadController::class, 'updateProfilePhoto'])->name('update.profile.photo');
+    Route::post('/upload-music', [UploadController::class, 'uploadMusic']);
+    Route::post('/upload-event', [UploadController::class, 'uploadEvent']);
+});
 
 // Authentication Routes
 Route::get('/login', [AuthController::class, 'showLoginForm'])->name('login');
@@ -31,11 +40,4 @@ Route::post('/login/musician', [AuthController::class, 'login'])->name('login.mu
 Route::post('/register/user', [AuthController::class, 'registerUser'])->name('register.user');
 Route::post('/register/musician', [AuthController::class, 'registerMusician'])->name('register.musician');
 Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
-
-// Protected Routes
-Route::middleware(['web'])->group(function () {
-    Route::post('/update-profile-photo', [UploadController::class, 'updateProfilePhoto'])->name('update.profile.photo');
-    Route::post('/upload-music', [UploadController::class, 'uploadMusic']);
-    Route::post('/upload-event', [UploadController::class, 'uploadEvent']);
-});
 
