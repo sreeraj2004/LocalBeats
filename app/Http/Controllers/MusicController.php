@@ -18,11 +18,16 @@ class MusicController extends Controller
         
         // Get current user's musician profile if logged in
         $currentMusician = null;
+        $isLoggedIn = false;
+        $userId = null;
+        
         if (session()->has('user_id')) {
-            $currentMusician = Musician::where('user_id', session('user_id'))->first();
+            $isLoggedIn = true;
+            $userId = session('user_id');
+            $currentMusician = Musician::where('user_id', $userId)->first();
         }
         
-        return view('home', compact('events', 'music', 'currentMusician'));
+        return view('home', compact('events', 'music', 'currentMusician', 'isLoggedIn', 'userId'));
     }
 
     public function home()
@@ -176,9 +181,18 @@ class MusicController extends Controller
             if ($events->isEmpty()) {
                 $message = "No events available at the moment.";
             }
+
+            // Check if user is logged in
+            $isLoggedIn = session()->has('user_id');
+            $userId = session('user_id');
             
-            \Log::info('Returning all events view', ['events_count' => $events->count()]);
-            return view('pages.events', compact('events', 'message'));
+            \Log::info('Returning all events view', [
+                'events_count' => $events->count(),
+                'is_logged_in' => $isLoggedIn,
+                'user_id' => $userId
+            ]);
+            
+            return view('pages.events', compact('events', 'message', 'isLoggedIn', 'userId'));
         } catch (\Exception $e) {
             \Log::error('Error in allEvents method: ' . $e->getMessage());
             return response()->json(['error' => $e->getMessage()], 500);

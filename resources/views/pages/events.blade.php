@@ -133,8 +133,12 @@
 </style>
 
 <script>
+// Pass PHP variables to JavaScript
+const isLoggedIn = @json($isLoggedIn);
+const userId = @json($userId);
+
 function bookEvent(eventId) {
-    if (!sessionStorage.getItem('user_id')) {
+    if (!isLoggedIn) {
         alert('Please log in to book an event');
         return;
     }

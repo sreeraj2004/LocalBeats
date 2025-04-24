@@ -162,12 +162,17 @@
                 @else
                     <img src="{{ asset('images/default-event-image.jpg') }}" alt="Default Event Image" class="event-image">
                 @endif
-                <h3>{{ $event->name }}</h3>
-                <p>By: {{ $event->musician->user->name }}</p>
-                <p>Date: {{ $event->date->format('M d, Y') }}</p>
-                <p>Time: {{ $event->time }}</p>
-                <p>Location: {{ $event->location }}</p>
-                <p>Price: ${{ number_format($event->price, 2) }}</p>
+                <div class="event-details">
+                    <h3>{{ $event->name }}</h3>
+                    <p>By: {{ $event->musician->user->name }}</p>
+                    <p>Date: {{ $event->date->format('M d, Y') }}</p>
+                    <p>Time: {{ $event->time }}</p>
+                    <p>Location: {{ $event->location }}</p>
+                    <p>Price: ${{ number_format($event->price, 2) }}</p>
+                    <button class="book-event-btn" onclick="bookEvent({{ $event->id }})">
+                        <i class="fas fa-ticket-alt"></i> Book Event
+                    </button>
+                </div>
             </div>
         @endforeach
         </div>
@@ -228,4 +233,53 @@
     <script src="{{ asset('js/home.js')}}" type="text/javascript"></script>
 </body>
 </html>
+
+<style>
+.book-event-btn {
+    width: 100%;
+    padding: 12px;
+    margin-top: 15px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 1.1em;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+}
+
+.book-event-btn:hover {
+    background-color: #0056b3;
+}
+
+.book-event-btn i {
+    color: white !important;
+    margin-right: 0 !important;
+}
+
+.event-details {
+    padding: 20px;
+}
+</style>
+
+<script>
+// Pass PHP variables to JavaScript
+const isLoggedIn = @json($isLoggedIn);
+const userId = @json($userId);
+
+function bookEvent(eventId) {
+    if (!isLoggedIn) {
+        alert('Please log in to book an event');
+        return;
+    }
+    
+    // TODO: Implement booking functionality
+    alert('Booking functionality coming soon!');
+}
+</script>
 
