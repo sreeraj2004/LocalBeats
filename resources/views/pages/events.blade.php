@@ -7,10 +7,10 @@
         <p>Discover upcoming music events and performances</p>
     </div>
 
-    @if(session()->has('user_id'))
+    @if(auth()->check())
         @if($events->isEmpty())
             <div class="empty-state">
-                <h2>Welcome to Events!</h2>
+                <h2>{{ $message }}</h2>
                 <p>Here you'll find all upcoming music events and performances.</p>
                 <p>Stay tuned for exciting events from your favorite musicians!</p>
             </div>
@@ -19,14 +19,14 @@
                 @foreach($events as $event)
                     <div class="event-card">
                         <div class="event-date">
-                            <span class="day">{{ \Carbon\Carbon::parse($event->event_date)->format('d') }}</span>
-                            <span class="month">{{ \Carbon\Carbon::parse($event->event_date)->format('M') }}</span>
+                            <span class="day">{{ \Carbon\Carbon::parse($event->date)->format('d') }}</span>
+                            <span class="month">{{ \Carbon\Carbon::parse($event->date)->format('M') }}</span>
                         </div>
                         <div class="event-details">
-                            <h3>{{ $event->event_name }}</h3>
-                            <p class="location"><i class="fas fa-map-marker-alt"></i> {{ $event->event_location }}</p>
-                            <p class="time"><i class="fas fa-clock"></i> {{ $event->event_time }}</p>
-                            <p class="description">{{ $event->event_description }}</p>
+                            <h3>{{ $event->name }}</h3>
+                            <p class="location"><i class="fas fa-map-marker-alt"></i> {{ $event->location }}</p>
+                            <p class="time"><i class="fas fa-clock"></i> {{ $event->time }}</p>
+                            <p class="price"><i class="fas fa-ticket-alt"></i> ${{ number_format($event->price, 2) }}</p>
                         </div>
                     </div>
                 @endforeach

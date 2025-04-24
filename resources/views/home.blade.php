@@ -18,8 +18,8 @@
     <ul class="nav-links">
       <li><a href="{{ route('home') }}" class="nav-link home-link">Home</a></li>
       <li><a href="{{ route('musicians') }}" class="nav-link musicians-link">Musicians</a></li>
-      <li><a href="{{ route('events') }}" class="nav-link events-link">Events</a></li>
-      <li><a href="{{ route('music') }}" class="nav-link music-link">Music</a></li>
+      <li><a href="{{ route('tests.event') }}" class="nav-link events-link">Events</a></li>
+      <li><a href="{{ route('tests.music') }}" class="nav-link music-link">Music</a></li>
       <li><a href="{{ route('about') }}" class="nav-link about-link">About</a></li>
     </ul>
     <div class="auth-buttons">

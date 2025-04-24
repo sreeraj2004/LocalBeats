@@ -15,22 +15,35 @@ use App\Http\Controllers\UploadController;
 |
 */
 
+// Debug route
+Route::get('/debug', function () {
+    return 'Debug route working';
+});
+
+// Simple test route
+Route::get('/test-events', function () {
+    return 'Test events route working';
+});
+
+// Simple test route
+Route::get('/test-music', function () {
+    return 'Test music route working';
+});
+
 // Main Routes
 Route::get('/', [MusicController::class, 'index'])->name('welcome');
 Route::get('/home', [MusicController::class, 'index'])->name('home');
 
 // Public Routes
 Route::get('/musicians', [MusicController::class, 'musicians'])->name('musicians');
-Route::get('/events', [MusicController::class, 'events'])->name('events');
-Route::get('/music', [MusicController::class, 'music'])->name('music');
+Route::get('/tests-event', [MusicController::class, 'events'])->name('tests.event');
+Route::get('/tests-music', [MusicController::class, 'music'])->name('tests.music');
 Route::get('/about', [MusicController::class, 'about'])->name('about');
 
 // Session-based Protected Routes
-Route::middleware(['web'])->group(function () {
-    Route::post('/update-profile-photo', [UploadController::class, 'updateProfilePhoto'])->name('update.profile.photo');
-    Route::post('/upload-music', [UploadController::class, 'uploadMusic']);
-    Route::post('/upload-event', [UploadController::class, 'uploadEvent']);
-});
+Route::post('/update-profile-photo', [UploadController::class, 'updateProfilePhoto'])->name('update.profile.photo');
+Route::post('/upload-music', [UploadController::class, 'uploadMusic']);
+Route::post('/upload-event', [UploadController::class, 'uploadEvent']);
 
 // Authentication Routes
 Route::get('/login', [AuthController::class, 'showLoginForm'])->name('login');

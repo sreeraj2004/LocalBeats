@@ -7,10 +7,10 @@
         <p>Discover and listen to amazing music from talented musicians</p>
     </div>
 
-    @if(session()->has('user_id'))
+    @if(auth()->check())
         @if($music->isEmpty())
             <div class="empty-state">
-                <h2>Welcome to Music!</h2>
+                <h2>{{ $message }}</h2>
                 <p>Here you'll find all the amazing tracks from our talented musicians.</p>
                 <p>Stay tuned for new music releases!</p>
             </div>
@@ -19,17 +19,21 @@
                 @foreach($music as $track)
                     <div class="music-card">
                         <div class="music-cover">
-                            <img src="{{ asset('storage/' . $track->cover_image) }}" alt="{{ $track->title }}">
+                            @if($track->image)
+                                <img src="{{ asset('storage/' . $track->image) }}" alt="{{ $track->title }}">
+                            @else
+                                <img src="{{ asset('images/default-music-cover.jpg') }}" alt="Default Cover">
+                            @endif
                             <div class="play-overlay">
                                 <i class="fas fa-play"></i>
                             </div>
                         </div>
                         <div class="music-details">
                             <h3>{{ $track->title }}</h3>
-                            <p class="artist">{{ $track->artist_name }}</p>
+                            <p class="artist">{{ $track->musician->user->name }}</p>
                             <p class="genre">{{ $track->genre }}</p>
                             <audio controls class="audio-player">
-                                <source src="{{ asset('storage/' . $track->audio_file) }}" type="audio/mpeg">
+                                <source src="{{ asset('storage/' . $track->song_path) }}" type="audio/mpeg">
                                 Your browser does not support the audio element.
                             </audio>
                         </div>

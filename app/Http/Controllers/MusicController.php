@@ -5,7 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 
 use App\Models\FeaturedMusic;
-use App\Models\UpcomingEvents;
+use App\Models\UpComingEvents;
 use App\Models\Musician;
 use App\Models\User;
 
@@ -13,7 +13,7 @@ class MusicController extends Controller
 {
     //
     public function index(){
-        $events = UpcomingEvents::with('musician')->orderBy('date', 'asc')->get();
+        $events = UpComingEvents::with('musician')->orderBy('date', 'asc')->get();
         $music = FeaturedMusic::with('musician')->orderBy('created_at', 'desc')->get();
         
         // Get current user's musician profile if logged in
@@ -40,44 +40,74 @@ class MusicController extends Controller
 
     public function events()
     {
-        $events = collect([]);
-        $message = '';
-        
-        if (session()->has('user_id')) {
-            $musician = Musician::where('user_id', session('user_id'))->first();
-            if ($musician) {
-                $events = UpcomingEvents::where('musician_id', $musician->id)
-                    ->orderBy('created_at', 'desc')
-                    ->get();
+        try {
+            \Log::info('Events method called');
+            $events = collect([]);
+            $message = '';
+            
+            if (auth()->check()) {
+                \Log::info('User is authenticated');
+                $user = auth()->user();
+                $musician = Musician::where('user_id', $user->id)->first();
                 
-                if ($events->isEmpty()) {
-                    $message = "You haven't created any events yet. Start by creating your first event!";
+                if ($musician) {
+                    \Log::info('Musician found', ['musician_id' => $musician->id]);
+                    $events = UpComingEvents::where('musician_id', $musician->id)
+                        ->orderBy('date', 'asc')
+                        ->get();
+                    
+                    if ($events->isEmpty()) {
+                        $message = "You haven't created any events yet. Start by creating your first event!";
+                    }
+                } else {
+                    $message = "You need to be a musician to view events.";
                 }
+            } else {
+                $message = "Please log in to view events.";
             }
+            
+            \Log::info('Returning events view', ['events_count' => $events->count()]);
+            return view('pages.events', compact('events', 'message'));
+        } catch (\Exception $e) {
+            \Log::error('Error in events method: ' . $e->getMessage());
+            return response()->json(['error' => $e->getMessage()], 500);
         }
-        
-        return view('pages.events', compact('events', 'message'));
     }
 
     public function music()
     {
-        $music = collect([]);
-        $message = '';
-        
-        if (session()->has('user_id')) {
-            $musician = Musician::where('user_id', session('user_id'))->first();
-            if ($musician) {
-                $music = FeaturedMusic::where('musician_id', $musician->id)
-                    ->orderBy('created_at', 'desc')
-                    ->get();
+        try {
+            \Log::info('Music method called');
+            $music = collect([]);
+            $message = '';
+            
+            if (auth()->check()) {
+                \Log::info('User is authenticated');
+                $user = auth()->user();
+                $musician = Musician::where('user_id', $user->id)->first();
                 
-                if ($music->isEmpty()) {
-                    $message = "You haven't shared any music yet. Share your first track with the world!";
+                if ($musician) {
+                    \Log::info('Musician found', ['musician_id' => $musician->id]);
+                    $music = FeaturedMusic::where('musician_id', $musician->id)
+                        ->orderBy('created_at', 'desc')
+                        ->get();
+                    
+                    if ($music->isEmpty()) {
+                        $message = "You haven't shared any music yet. Share your first track with the world!";
+                    }
+                } else {
+                    $message = "You need to be a musician to view music.";
                 }
+            } else {
+                $message = "Please log in to view music.";
             }
+            
+            \Log::info('Returning music view', ['music_count' => $music->count()]);
+            return view('pages.music', compact('music', 'message'));
+        } catch (\Exception $e) {
+            \Log::error('Error in music method: ' . $e->getMessage());
+            return response()->json(['error' => $e->getMessage()], 500);
         }
-        
-        return view('pages.music', compact('music', 'message'));
     }
 
     public function about()
