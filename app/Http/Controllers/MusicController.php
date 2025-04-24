@@ -45,9 +45,9 @@ class MusicController extends Controller
             $events = collect([]);
             $message = '';
             
-            if (auth()->check()) {
+            if (session()->has('user_id')) {
                 \Log::info('User is authenticated');
-                $user = auth()->user();
+                $user = User::find(session('user_id'));
                 $musician = Musician::where('user_id', $user->id)->first();
                 
                 if ($musician) {
@@ -82,9 +82,9 @@ class MusicController extends Controller
             $music = collect([]);
             $message = '';
             
-            if (auth()->check()) {
+            if (session()->has('user_id')) {
                 \Log::info('User is authenticated');
-                $user = auth()->user();
+                $user = User::find(session('user_id'));
                 $musician = Musician::where('user_id', $user->id)->first();
                 
                 if ($musician) {

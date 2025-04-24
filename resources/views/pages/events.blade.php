@@ -23,6 +23,9 @@
                     <p class="event-time"><i class="far fa-clock"></i> {{ $event->time }}</p>
                     <p class="event-location"><i class="fas fa-map-marker-alt"></i> {{ $event->location }}</p>
                     <p class="event-price"><i class="fas fa-ticket-alt"></i> ${{ number_format($event->price, 2) }}</p>
+                    <button class="book-event-btn" onclick="bookEvent({{ $event->id }})">
+                        <i class="fas fa-ticket-alt"></i> Book Event
+                    </button>
                 </div>
             </div>
         @endforeach
@@ -100,5 +103,44 @@
     color: #007bff !important;
     font-weight: 500;
 }
+
+.book-event-btn {
+    width: 100%;
+    padding: 12px;
+    margin-top: 15px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 1.1em;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+}
+
+.book-event-btn:hover {
+    background-color: #0056b3;
+}
+
+.book-event-btn i {
+    color: white !important;
+    margin-right: 0 !important;
+}
 </style>
+
+<script>
+function bookEvent(eventId) {
+    if (!sessionStorage.getItem('user_id')) {
+        alert('Please log in to book an event');
+        return;
+    }
+    
+    // TODO: Implement booking functionality
+    alert('Booking functionality coming soon!');
+}
+</script>
 @endsection 

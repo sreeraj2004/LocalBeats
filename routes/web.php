@@ -36,11 +36,15 @@ Route::get('/home', [MusicController::class, 'index'])->name('home');
 
 // Public Routes
 Route::get('/musicians', [MusicController::class, 'musicians'])->name('musicians');
-Route::get('/tests-event', [MusicController::class, 'events'])->name('tests.event');
-Route::get('/tests-music', [MusicController::class, 'music'])->name('tests.music');
 Route::get('/tests-events', [MusicController::class, 'allEvents'])->name('tests.events');
 Route::get('/tests-musics', [MusicController::class, 'allMusic'])->name('tests.musics');
 Route::get('/about', [MusicController::class, 'about'])->name('about');
+
+// Protected Musician Routes
+Route::middleware(['auth'])->group(function () {
+    Route::get('/tests-event', [MusicController::class, 'events'])->name('tests.event');
+    Route::get('/tests-music', [MusicController::class, 'music'])->name('tests.music');
+});
 
 // Session-based Protected Routes
 Route::post('/update-profile-photo', [UploadController::class, 'updateProfilePhoto'])->name('update.profile.photo');
