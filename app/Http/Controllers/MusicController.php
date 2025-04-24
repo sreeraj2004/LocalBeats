@@ -49,10 +49,14 @@ class MusicController extends Controller
             \Log::info('Events method called');
             $events = collect([]);
             $message = '';
+            $isLoggedIn = false;
+            $userId = null;
             
             if (session()->has('user_id')) {
                 \Log::info('User is authenticated');
-                $user = User::find(session('user_id'));
+                $isLoggedIn = true;
+                $userId = session('user_id');
+                $user = User::find($userId);
                 $musician = Musician::where('user_id', $user->id)->first();
                 
                 if ($musician) {
@@ -72,8 +76,12 @@ class MusicController extends Controller
                 $message = "Please log in to view events.";
             }
             
-            \Log::info('Returning events view', ['events_count' => $events->count()]);
-            return view('pages.events', compact('events', 'message'));
+            \Log::info('Returning events view', [
+                'events_count' => $events->count(),
+                'is_logged_in' => $isLoggedIn,
+                'user_id' => $userId
+            ]);
+            return view('pages.events', compact('events', 'message', 'isLoggedIn', 'userId'));
         } catch (\Exception $e) {
             \Log::error('Error in events method: ' . $e->getMessage());
             return response()->json(['error' => $e->getMessage()], 500);
@@ -140,9 +148,13 @@ class MusicController extends Controller
                 'profile_photo' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048'
             ]);
 
-            $user = auth()->user();
-            if (!$user) {
+            if (!session()->has('user_id')) {
                 return response()->json(['success' => false, 'message' => 'User not authenticated'], 401);
+            }
+
+            $user = User::find(session('user_id'));
+            if (!$user) {
+                return response()->json(['success' => false, 'message' => 'User not found'], 404);
             }
 
             if ($request->hasFile('profile_photo')) {
@@ -212,8 +224,17 @@ class MusicController extends Controller
                 $message = "No music available at the moment.";
             }
             
-            \Log::info('Returning all music view', ['music_count' => $music->count()]);
-            return view('pages.music', compact('music', 'message'));
+            // Check if user is logged in
+            $isLoggedIn = session()->has('user_id');
+            $userId = session('user_id');
+            
+            \Log::info('Returning all music view', [
+                'music_count' => $music->count(),
+                'is_logged_in' => $isLoggedIn,
+                'user_id' => $userId
+            ]);
+            
+            return view('pages.music', compact('music', 'message', 'isLoggedIn', 'userId'));
         } catch (\Exception $e) {
             \Log::error('Error in allMusic method: ' . $e->getMessage());
             return response()->json(['error' => $e->getMessage()], 500);

@@ -5,7 +5,7 @@ namespace App\Http\Middleware;
 use App\Providers\RouteServiceProvider;
 use Closure;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 
 class RedirectIfAuthenticated
 {
@@ -19,12 +19,13 @@ class RedirectIfAuthenticated
      */
     public function handle(Request $request, Closure $next, ...$guards)
     {
-        $guards = empty($guards) ? [null] : $guards;
-
-        foreach ($guards as $guard) {
-            if (Auth::guard($guard)->check()) {
-                return redirect(RouteServiceProvider::HOME);
-            }
+        Log::info('RedirectIfAuthenticated middleware called', [
+            'session_has_user_id' => session()->has('user_id'),
+            'user_id' => session('user_id')
+        ]);
+        
+        if (session()->has('user_id')) {
+            return redirect(RouteServiceProvider::HOME);
         }
 
         return $next($request);

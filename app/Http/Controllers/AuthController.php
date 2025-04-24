@@ -168,7 +168,7 @@ class AuthController extends Controller
 
     public function showLoginForm()
     {
-        if (auth()->check()) {
+        if (session()->has('user_id')) {
             return redirect('/');
         }
         return redirect('/')->with('showLogin', true);

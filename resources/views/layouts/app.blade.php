@@ -30,9 +30,9 @@
             <li><a href="{{ url('/musicians') }}" class="nav-link musicians-link">Musicians</a></li>
             @php
                 $isMusician = false;
-                if (auth()->check()) {
-                    $user = auth()->user();
-                    $musician = \App\Models\Musician::where('user_id', $user->id)->first();
+                if (session()->has('user_id')) {
+                    $userId = session('user_id');
+                    $musician = \App\Models\Musician::where('user_id', $userId)->first();
                     $isMusician = $musician ? true : false;
                 }
             @endphp

@@ -41,7 +41,7 @@ Route::get('/tests-musics', [MusicController::class, 'allMusic'])->name('tests.m
 Route::get('/about', [MusicController::class, 'about'])->name('about');
 
 // Protected Musician Routes
-Route::middleware(['auth'])->group(function () {
+Route::middleware(['session.auth'])->group(function () {
     Route::get('/tests-event', [MusicController::class, 'events'])->name('tests.event');
     Route::get('/tests-music', [MusicController::class, 'music'])->name('tests.music');
 });
