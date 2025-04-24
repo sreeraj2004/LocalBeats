@@ -71,10 +71,10 @@
                 <button class="action-btn" onclick="window.location.href='/edit-profile'">
                     <i class="fas fa-edit"></i> Edit Profile
                 </button>
-                <button class="action-btn" onclick="window.location.href='/events'">
+                <button class="action-btn" onclick="window.location.href='/tests-event'">
                     <i class="fas fa-calendar"></i> My Events
                 </button>
-                <button class="action-btn" onclick="window.location.href='/music'">
+                <button class="action-btn" onclick="window.location.href='/tests-music'">
                     <i class="fas fa-music"></i> My Music
                 </button>
             </div>

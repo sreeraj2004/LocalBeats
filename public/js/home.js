@@ -316,6 +316,8 @@ document.addEventListener('DOMContentLoaded', function () {
         if (data.isMusician) {
           sessionStorage.setItem('musicianId', data.musician.id);
         }
+        // Clear form fields
+        form.reset();
         hidePopup('popupOverlay');
         window.location.href = data.redirect || '/';
       } else {

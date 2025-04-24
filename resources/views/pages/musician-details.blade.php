@@ -13,6 +13,11 @@
                 <h1>{{ $musician->user->name }}</h1>
                 <p class="band-name">{{ $musician->band_name }}</p>
                 <p class="genre"><i class="fas fa-music"></i> {{ $musician->genre }}</p>
+                @if(session()->has('user_id') && session('user_id') != $musician->user_id)
+                    <a href="{{ route('musicians.book', $musician->id) }}" class="book-btn">
+                        <i class="fas fa-calendar-plus"></i> Book This Musician
+                    </a>
+                @endif
             </div>
         </div>
 
@@ -188,6 +193,27 @@
 .date i, .time i, .location i, .price i {
     margin-right: 8px;
     color: #007bff;
+}
+
+.book-btn {
+    display: inline-block;
+    margin-top: 15px;
+    padding: 10px 20px;
+    background-color: #007bff;
+    color: white;
+    border-radius: 5px;
+    text-decoration: none;
+    transition: background-color 0.3s ease;
+}
+
+.book-btn:hover {
+    background-color: #0056b3;
+    color: white;
+    text-decoration: none;
+}
+
+.book-btn i {
+    margin-right: 8px;
 }
 </style>
 @endsection 

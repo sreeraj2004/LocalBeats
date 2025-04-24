@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\MusicController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\UploadController;
+use App\Http\Controllers\UserEventController;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -59,4 +60,10 @@ Route::post('/login/musician', [AuthController::class, 'login'])->name('login.mu
 Route::post('/register/user', [AuthController::class, 'registerUser'])->name('register.user');
 Route::post('/register/musician', [AuthController::class, 'registerMusician'])->name('register.musician');
 Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
+
+// Booking routes
+Route::middleware(['auth'])->group(function () {
+    Route::get('/musicians/{musician}/book', [UserEventController::class, 'show'])->name('musicians.book');
+    Route::post('/user-events', [UserEventController::class, 'store'])->name('user-events.store');
+});
 
