@@ -129,25 +129,25 @@
   <section class="featured-music-section">
     <h2 class="section-title">Featured Musicians</h2>
     <div class="music-grid">
-    @foreach($music as $track)
-        <div class="music-card">
-            @if($track->image)
-                <img src="{{ asset('storage/' . $track->image) }}" alt="{{ $track->artist_name }}" class="music-cover">
-            @else
-                <img src="{{ asset('images/default-music-cover.jpg') }}" alt="Default Cover" class="music-cover">
-            @endif
-            <h3>{{ $track->artist_name }}</h3>
-            <p>By: {{ $track->musician->user->name }}</p>
-            <p>Genre: {{ $track->genre }}</p>
-            <audio controls>
-                <source src="{{ asset('storage/' . $track->song_path) }}" type="audio/mpeg">
-                Your browser does not support the audio element.
-            </audio>
-        </div>
-    @endforeach
+        @foreach($music->take(3) as $track)
+            <div class="music-card">
+                @if($track->image)
+                    <img src="{{ asset('storage/' . $track->image) }}" alt="{{ $track->artist_name }}" class="music-cover">
+                @else
+                    <img src="{{ asset('images/default-music-cover.jpg') }}" alt="Default Cover" class="music-cover">
+                @endif
+                <h3>{{ $track->artist_name }}</h3>
+                <p>By: {{ $track->musician->user->name }}</p>
+                <p>Genre: {{ $track->genre }}</p>
+                <audio controls>
+                    <source src="{{ asset('storage/' . $track->song_path) }}" type="audio/mpeg">
+                    Your browser does not support the audio element.
+                </audio>
+            </div>
+        @endforeach
     </div>
     @if(count($music) > 3)
-    <p class="toggle-btn" id="musicToggleBtn" style="color: blue; text-align: center; cursor: pointer; margin-top: 20px;">Show More</p>
+        <p class="toggle-btn" id="musicToggleBtn" style="color: blue; text-align: center; cursor: pointer; margin-top: 20px;">Show More</p>
     @endif
     </section>
 
@@ -155,24 +155,24 @@
     <section class="Upcoming-events">
         <h2 class="section-title">Upcoming Events</h2>
         <div class="event-grid">
-        @foreach($events as $event)
-            <div class="event-card">
-                @if($event->image)
-                    <img src="{{ asset('storage/' . $event->image) }}" alt="{{ $event->name }}" class="event-image">
-                @else
-                    <img src="{{ asset('images/default-event-image.jpg') }}" alt="Default Event Image" class="event-image">
-                @endif
-                <h3>{{ $event->name }}</h3>
-                <p>By: {{ $event->musician->user->name }}</p>
-                <p>Date: {{ $event->date->format('M d, Y') }}</p>
-                <p>Time: {{ $event->time }}</p>
-                <p>Location: {{ $event->location }}</p>
-                <p>Price: ${{ number_format($event->price, 2) }}</p>
-            </div>
-        @endforeach
+            @foreach($events->take(3) as $event)
+                <div class="event-card">
+                    @if($event->image)
+                        <img src="{{ asset('storage/' . $event->image) }}" alt="{{ $event->name }}" class="event-image">
+                    @else
+                        <img src="{{ asset('images/default-event-image.jpg') }}" alt="Default Event Image" class="event-image">
+                    @endif
+                    <h3>{{ $event->name }}</h3>
+                    <p>By: {{ $event->musician->user->name }}</p>
+                    <p>Date: {{ $event->date->format('M d, Y') }}</p>
+                    <p>Time: {{ $event->time }}</p>
+                    <p>Location: {{ $event->location }}</p>
+                    <p>Price: ${{ number_format($event->price, 2) }}</p>
+                </div>
+            @endforeach
         </div>
         @if(count($events) > 3)
-        <p class="toggle-btn" id="eventToggleBtn" style="color: blue; text-align: center; cursor: pointer; margin-top: 20px;">Show More</p>
+            <p class="toggle-btn" id="eventToggleBtn" style="color: blue; text-align: center; cursor: pointer; margin-top: 20px;">Show More</p>
         @endif
     </section>
 
@@ -226,5 +226,57 @@
         <p>&copy; 2025 LocalBeats. All rights reserved. | <a href="#">Credits</a></p>
     </div>
     <script src="{{ asset('js/home.js')}}" type="text/javascript"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const musicToggleBtn = document.getElementById('musicToggleBtn');
+            const eventToggleBtn = document.getElementById('eventToggleBtn');
+            
+            function showLoginAlert() {
+                alert('Please log in to view more content!');
+                // Optionally, you can trigger the login popup here
+                document.getElementById('loginBtn').click();
+            }
+
+            if (musicToggleBtn) {
+                musicToggleBtn.addEventListener('click', function() {
+                    @if(auth()->check())
+                        @php
+                            $isMusician = false;
+                            $user = auth()->user();
+                            $musician = \App\Models\Musician::where('user_id', $user->id)->first();
+                            $isMusician = $musician ? true : false;
+                        @endphp
+                        @if($isMusician)
+                            window.location.href = "{{ route('tests.music') }}";
+                        @else
+                            window.location.href = "{{ route('tests.musics') }}";
+                        @endif
+                    @else
+                        showLoginAlert();
+                    @endif
+                });
+            }
+
+            if (eventToggleBtn) {
+                eventToggleBtn.addEventListener('click', function() {
+                    @if(auth()->check())
+                        @php
+                            $isMusician = false;
+                            $user = auth()->user();
+                            $musician = \App\Models\Musician::where('user_id', $user->id)->first();
+                            $isMusician = $musician ? true : false;
+                        @endphp
+                        @if($isMusician)
+                            window.location.href = "{{ route('tests.event') }}";
+                        @else
+                            window.location.href = "{{ route('tests.events') }}";
+                        @endif
+                    @else
+                        showLoginAlert();
+                    @endif
+                });
+            }
+        });
+    </script>
 </body>
 </html> 

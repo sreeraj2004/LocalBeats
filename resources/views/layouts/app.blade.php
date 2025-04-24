@@ -28,8 +28,21 @@
         <ul class="nav-links">
             <li><a href="{{ url('/home') }}" class="nav-link home-link">Home</a></li>
             <li><a href="{{ url('/musicians') }}" class="nav-link musicians-link">Musicians</a></li>
-            <li><a href="{{ url('/tests-event') }}" class="nav-link events-link">Events</a></li>
-            <li><a href="{{ url('/tests-music') }}" class="nav-link music-link">Music</a></li>
+            @php
+                $isMusician = false;
+                if (auth()->check()) {
+                    $user = auth()->user();
+                    $musician = \App\Models\Musician::where('user_id', $user->id)->first();
+                    $isMusician = $musician ? true : false;
+                }
+            @endphp
+            @if($isMusician)
+                <li><a href="{{ url('/tests-event') }}" class="nav-link events-link">My Events</a></li>
+                <li><a href="{{ url('/tests-music') }}" class="nav-link music-link">My Music</a></li>
+            @else
+                <li><a href="{{ url('/tests-events') }}" class="nav-link events-link">Events</a></li>
+                <li><a href="{{ url('/tests-musics') }}" class="nav-link music-link">Music</a></li>
+            @endif
             <li><a href="{{ url('/about') }}" class="nav-link about-link">About</a></li>
         </ul>
         <div class="auth-buttons">

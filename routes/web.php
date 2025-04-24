@@ -38,6 +38,8 @@ Route::get('/home', [MusicController::class, 'index'])->name('home');
 Route::get('/musicians', [MusicController::class, 'musicians'])->name('musicians');
 Route::get('/tests-event', [MusicController::class, 'events'])->name('tests.event');
 Route::get('/tests-music', [MusicController::class, 'music'])->name('tests.music');
+Route::get('/tests-events', [MusicController::class, 'allEvents'])->name('tests.events');
+Route::get('/tests-musics', [MusicController::class, 'allMusic'])->name('tests.musics');
 Route::get('/about', [MusicController::class, 'about'])->name('about');
 
 // Session-based Protected Routes

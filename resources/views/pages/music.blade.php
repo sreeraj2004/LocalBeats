@@ -1,204 +1,117 @@
 @extends('layouts.app')
 
 @section('content')
-<div class="music-container">
-    <div class="music-header">
-        <h1>Music</h1>
-        <p>Discover and listen to amazing music from talented musicians</p>
-    </div>
-
-    @if(auth()->check())
-        @if($music->isEmpty())
-            <div class="empty-state">
-                <h2>{{ $message }}</h2>
-                <p>Here you'll find all the amazing tracks from our talented musicians.</p>
-                <p>Stay tuned for new music releases!</p>
-            </div>
-        @else
-            <div class="music-grid">
-                @foreach($music as $track)
-                    <div class="music-card">
-                        <div class="music-cover">
-                            @if($track->image)
-                                <img src="{{ asset('storage/' . $track->image) }}" alt="{{ $track->title }}">
-                            @else
-                                <img src="{{ asset('images/default-music-cover.jpg') }}" alt="Default Cover">
-                            @endif
-                            <div class="play-overlay">
-                                <i class="fas fa-play"></i>
-                            </div>
-                        </div>
-                        <div class="music-details">
-                            <h3>{{ $track->title }}</h3>
-                            <p class="artist">{{ $track->musician->user->name }}</p>
-                            <p class="genre">{{ $track->genre }}</p>
-                            <audio controls class="audio-player">
-                                <source src="{{ asset('storage/' . $track->song_path) }}" type="audio/mpeg">
-                                Your browser does not support the audio element.
-                            </audio>
-                        </div>
-                    </div>
-                @endforeach
-            </div>
-        @endif
-    @else
-        <div class="login-prompt">
-            <h2>Welcome to Music!</h2>
-            <p>Please log in to discover and listen to amazing music.</p>
-            <button class="login-btn" onclick="showPopup('login')">Log In</button>
-        </div>
+<div class="container">
+    <h1 class="section-title">All Music</h1>
+    
+    @if($message)
+        <p class="alert">{{ $message }}</p>
     @endif
+
+    <div class="music-grid">
+        @foreach($music as $track)
+            <div class="music-card">
+                @if($track->image)
+                    <img src="{{ asset('storage/' . $track->image) }}" alt="{{ $track->title }}" class="music-cover">
+                @else
+                    <img src="{{ asset('images/default-music-cover.jpg') }}" alt="Default Cover" class="music-cover">
+                @endif
+                <div class="music-details">
+                    <h3>{{ $track->title }}</h3>
+                    <p class="artist-name">By: {{ $track->musician->user->name }}</p>
+                    <p class="genre"><i class="fas fa-music"></i> {{ $track->genre }}</p>
+                    <div class="audio-player">
+                        <audio controls>
+                            <source src="{{ asset('storage/' . $track->song_path) }}" type="audio/mpeg">
+                            Your browser does not support the audio element.
+                        </audio>
+                    </div>
+                </div>
+            </div>
+        @endforeach
+    </div>
 </div>
 
 <style>
-    .music-container {
-        max-width: 1200px;
-        margin: 0 auto;
-        padding: 2rem;
-    }
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+}
 
-    .music-header {
-        text-align: center;
-        margin-bottom: 3rem;
-    }
+.section-title {
+    text-align: center;
+    margin-bottom: 40px;
+    color: #333;
+    font-size: 2.5em;
+}
 
-    .music-header h1 {
-        font-size: 2.5rem;
-        color: #333;
-        margin-bottom: 1rem;
-    }
+.alert {
+    text-align: center;
+    padding: 15px;
+    margin-bottom: 20px;
+    background-color: #f8f9fa;
+    border-radius: 5px;
+}
 
-    .music-header p {
-        font-size: 1.1rem;
-        color: #666;
-    }
+.music-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 30px;
+    padding: 20px;
+}
 
-    .empty-state {
-        text-align: center;
-        padding: 3rem;
-        background: #f8f9fa;
-        border-radius: 10px;
-        margin: 2rem 0;
-    }
+.music-card {
+    background: white;
+    border-radius: 15px;
+    overflow: hidden;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease;
+}
 
-    .empty-state h2 {
-        color: #333;
-        margin-bottom: 1rem;
-    }
+.music-card:hover {
+    transform: translateY(-5px);
+}
 
-    .empty-state p {
-        color: #666;
-        margin-bottom: 0.5rem;
-    }
+.music-cover {
+    width: 100%;
+    height: 200px;
+    object-fit: cover;
+}
 
-    .music-grid {
-        display: grid;
-        grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-        gap: 2rem;
-        margin-top: 2rem;
-    }
+.music-details {
+    padding: 20px;
+}
 
-    .music-card {
-        background: white;
-        border-radius: 10px;
-        box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-        overflow: hidden;
-        transition: transform 0.3s ease;
-    }
+.music-details h3 {
+    margin: 0 0 15px 0;
+    color: #333;
+    font-size: 1.4em;
+}
 
-    .music-card:hover {
-        transform: translateY(-5px);
-    }
+.music-details p {
+    margin: 10px 0;
+    color: #666;
+}
 
-    .music-cover {
-        position: relative;
-        width: 100%;
-        padding-top: 100%;
-        background: #f8f9fa;
-    }
+.music-details i {
+    margin-right: 8px;
+    color: #007bff;
+}
 
-    .music-cover img {
-        position: absolute;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        object-fit: cover;
-    }
+.artist-name {
+    color: #007bff !important;
+    font-weight: 500;
+}
 
-    .play-overlay {
-        position: absolute;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background: rgba(0,0,0,0.3);
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        opacity: 0;
-        transition: opacity 0.3s ease;
-    }
+.audio-player {
+    margin-top: 15px;
+    width: 100%;
+}
 
-    .music-card:hover .play-overlay {
-        opacity: 1;
-    }
-
-    .play-overlay i {
-        color: white;
-        font-size: 3rem;
-    }
-
-    .music-details {
-        padding: 1.5rem;
-    }
-
-    .music-details h3 {
-        color: #333;
-        margin-bottom: 0.5rem;
-    }
-
-    .music-details p {
-        color: #666;
-        margin-bottom: 0.5rem;
-    }
-
-    .audio-player {
-        width: 100%;
-        margin-top: 1rem;
-    }
-
-    .login-prompt {
-        text-align: center;
-        padding: 3rem;
-        background: #f8f9fa;
-        border-radius: 10px;
-        margin: 2rem 0;
-    }
-
-    .login-prompt h2 {
-        color: #333;
-        margin-bottom: 1rem;
-    }
-
-    .login-prompt p {
-        color: #666;
-        margin-bottom: 1.5rem;
-    }
-
-    .login-btn {
-        background: #007bff;
-        color: white;
-        border: none;
-        padding: 0.8rem 2rem;
-        border-radius: 5px;
-        cursor: pointer;
-        font-size: 1rem;
-        transition: background 0.3s ease;
-    }
-
-    .login-btn:hover {
-        background: #0056b3;
-    }
+.audio-player audio {
+    width: 100%;
+    height: 40px;
+}
 </style>
 @endsection 

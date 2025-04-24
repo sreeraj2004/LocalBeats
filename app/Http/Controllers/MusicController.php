@@ -52,8 +52,9 @@ class MusicController extends Controller
                 
                 if ($musician) {
                     \Log::info('Musician found', ['musician_id' => $musician->id]);
+                    // Show only events created by this musician
                     $events = UpComingEvents::where('musician_id', $musician->id)
-                        ->orderBy('date', 'asc')
+                        ->orderBy('date', 'desc')
                         ->get();
                     
                     if ($events->isEmpty()) {
@@ -88,6 +89,7 @@ class MusicController extends Controller
                 
                 if ($musician) {
                     \Log::info('Musician found', ['musician_id' => $musician->id]);
+                    // Show only music created by this musician
                     $music = FeaturedMusic::where('musician_id', $musician->id)
                         ->orderBy('created_at', 'desc')
                         ->get();
@@ -159,6 +161,48 @@ class MusicController extends Controller
             return response()->json(['success' => false, 'message' => 'No file uploaded'], 400);
         } catch (\Exception $e) {
             return response()->json(['success' => false, 'message' => $e->getMessage()], 500);
+        }
+    }
+
+    public function allEvents()
+    {
+        try {
+            \Log::info('All Events method called');
+            $events = UpComingEvents::with('musician')
+                ->orderBy('date', 'desc')
+                ->get();
+            
+            $message = '';
+            if ($events->isEmpty()) {
+                $message = "No events available at the moment.";
+            }
+            
+            \Log::info('Returning all events view', ['events_count' => $events->count()]);
+            return view('pages.events', compact('events', 'message'));
+        } catch (\Exception $e) {
+            \Log::error('Error in allEvents method: ' . $e->getMessage());
+            return response()->json(['error' => $e->getMessage()], 500);
+        }
+    }
+
+    public function allMusic()
+    {
+        try {
+            \Log::info('All Music method called');
+            $music = FeaturedMusic::with('musician')
+                ->orderBy('created_at', 'desc')
+                ->get();
+            
+            $message = '';
+            if ($music->isEmpty()) {
+                $message = "No music available at the moment.";
+            }
+            
+            \Log::info('Returning all music view', ['music_count' => $music->count()]);
+            return view('pages.music', compact('music', 'message'));
+        } catch (\Exception $e) {
+            \Log::error('Error in allMusic method: ' . $e->getMessage());
+            return response()->json(['error' => $e->getMessage()], 500);
         }
     }
 }
