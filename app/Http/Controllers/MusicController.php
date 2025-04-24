@@ -37,10 +37,30 @@ class MusicController extends Controller
 
     public function musicians()
     {
-        // Get all musicians with their user data and relationships
-        $musicians = Musician::with(['user', 'featured_music', 'upcoming_events'])->get();
+        // Get all musicians with their user data only
+        $musicians = Musician::with(['user'])->get();
         
         return view('pages.musicians', compact('musicians'));
+    }
+
+    public function musicianDetails($id)
+    {
+        try {
+            $musician = Musician::with([
+                'user',
+                'featured_music' => function($query) {
+                    $query->orderBy('created_at', 'desc')->limit(2);
+                },
+                'upcoming_events' => function($query) {
+                    $query->orderBy('date', 'desc')->limit(2);
+                }
+            ])->findOrFail($id);
+            
+            return view('pages.musician-details', compact('musician'));
+        } catch (\Exception $e) {
+            \Log::error('Error in musicianDetails method: ' . $e->getMessage());
+            return redirect()->route('musicians')->with('error', 'Musician not found');
+        }
     }
 
     public function events()

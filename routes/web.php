@@ -36,6 +36,7 @@ Route::get('/home', [MusicController::class, 'index'])->name('home');
 
 // Public Routes
 Route::get('/musicians', [MusicController::class, 'musicians'])->name('musicians');
+Route::get('/musician/{id}', [MusicController::class, 'musicianDetails'])->name('musician.details');
 Route::get('/tests-events', [MusicController::class, 'allEvents'])->name('tests.events');
 Route::get('/tests-musics', [MusicController::class, 'allMusic'])->name('tests.musics');
 Route::get('/about', [MusicController::class, 'about'])->name('about');
