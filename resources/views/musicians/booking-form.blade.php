@@ -20,9 +20,6 @@
                 <div class="card-header">Book {{ $musician->name }}</div>
 
                 <div class="card-body">
-                    <div class="musician-price mb-4">
-                        <h4>Musician's Price: ${{ number_format($musician->price, 2) }}</h4>
-                    </div>
 
                     <form method="POST" action="{{ route('user-events.store') }}" id="bookingForm">
                         @csrf
