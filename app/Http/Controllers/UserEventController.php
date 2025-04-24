@@ -12,62 +12,70 @@ class UserEventController extends Controller
 {
     public function store(Request $request)
     {
-        try {
-            $request->validate([
-                'musician_id' => 'required|exists:musicians,id',
-                'name' => 'required|string|max:255',
-                'date' => 'required|date|after:today',
-                'start_time' => 'required',
-                'end_time' => 'required|after:start_time',
-                'location' => 'required|string|max:255',
-                'description' => 'required|string'
-            ]);
-
-            // Check if the musician is available
-            $isAvailable = $this->checkAvailability(
-                $request->musician_id,
-                $request->date,
-                $request->start_time,
-                $request->end_time
-            );
-
-            if (!$isAvailable) {
+        if (!session()->has('user_id')) {
+            if ($request->ajax()) {
                 return response()->json([
                     'success' => false,
-                    'message' => 'The musician is not available for the selected time slot.'
+                    'message' => 'Please login to book a musician.'
+                ], 401);
+            }
+            return redirect()->route('login')->with('error', 'Please login to book a musician.');
+        }
+
+        $validated = $request->validate([
+            'musician_id' => 'required|exists:musicians,id',
+            'name' => 'required|string|max:255',
+            'date' => 'required|date|after_or_equal:today',
+            'start_time' => 'required',
+            'end_time' => 'required|after:start_time',
+            'location' => 'required|string|max:255',
+            'description' => 'required|string'
+        ]);
+
+        // Check musician availability
+        if (!$this->checkAvailability($validated['musician_id'], $validated['date'], $validated['start_time'], $validated['end_time'])) {
+            if ($request->ajax()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'The musician is not available during the selected time slot.'
                 ], 422);
             }
+            return back()->with('error', 'The musician is not available during the selected time slot.');
+        }
 
+        try {
             $userEvent = UserEvent::create([
-                'user_id' => Auth::id(),
-                'musician_id' => $request->musician_id,
-                'name' => $request->name,
-                'date' => $request->date,
-                'start_time' => $request->start_time,
-                'end_time' => $request->end_time,
-                'location' => $request->location,
-                'description' => $request->description,
-                'status' => 'pending'
+                'user_id' => session('user_id'),
+                'musician_id' => $validated['musician_id'],
+                'name' => $validated['name'],
+                'date' => $validated['date'],
+                'start_time' => $validated['start_time'],
+                'end_time' => $validated['end_time'],
+                'location' => $validated['location'],
+                'description' => $validated['description']
             ]);
 
-            Log::info('New event booking created', ['event_id' => $userEvent->id]);
+            if ($request->ajax()) {
+                return response()->json([
+                    'success' => true,
+                    'message' => 'Booking request submitted successfully!',
+                    'redirect' => route('musician.details', $validated['musician_id'])
+                ]);
+            }
 
-            return response()->json([
-                'success' => true,
-                'message' => 'Event booking request submitted successfully.',
-                'data' => $userEvent
-            ]);
-
+            return redirect()->route('musician.details', $validated['musician_id'])
+                ->with('success', 'Booking request submitted successfully!');
         } catch (\Exception $e) {
-            Log::error('Error creating event booking', [
-                'error' => $e->getMessage(),
-                'trace' => $e->getTraceAsString()
-            ]);
-
-            return response()->json([
-                'success' => false,
-                'message' => 'An error occurred while processing your request.'
-            ], 500);
+            Log::error('Error creating user event: ' . $e->getMessage());
+            
+            if ($request->ajax()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'An error occurred while submitting your booking request. Please try again.'
+                ], 500);
+            }
+            
+            return back()->with('error', 'An error occurred while submitting your booking request. Please try again.');
         }
     }
 
@@ -90,8 +98,13 @@ class UserEventController extends Controller
         return $existingBookings === 0;
     }
 
-    public function show(Musician $musician)
+    public function show($musicianId)
     {
+        if (!session()->has('user_id')) {
+            return redirect()->route('login')->with('error', 'Please login to book a musician.');
+        }
+
+        $musician = Musician::findOrFail($musicianId);
         return view('musicians.booking-form', compact('musician'));
     }
 }

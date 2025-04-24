@@ -62,7 +62,7 @@ Route::post('/register/musician', [AuthController::class, 'registerMusician'])->
 Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
 // Booking routes
-Route::middleware(['auth'])->group(function () {
+Route::middleware(['session.auth'])->group(function () {
     Route::get('/musicians/{musician}/book', [UserEventController::class, 'show'])->name('musicians.book');
     Route::post('/user-events', [UserEventController::class, 'store'])->name('user-events.store');
 });

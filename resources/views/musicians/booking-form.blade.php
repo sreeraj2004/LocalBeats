@@ -4,11 +4,27 @@
 <div class="container">
     <div class="row justify-content-center">
         <div class="col-md-8">
+            @if(session('error'))
+                <div class="alert alert-danger">
+                    {{ session('error') }}
+                </div>
+            @endif
+
+            @if(session('success'))
+                <div class="alert alert-success">
+                    {{ session('success') }}
+                </div>
+            @endif
+
             <div class="card">
                 <div class="card-header">Book {{ $musician->name }}</div>
 
                 <div class="card-body">
-                    <form id="bookingForm" method="POST" action="{{ route('user-events.store') }}">
+                    <div class="musician-price mb-4">
+                        <h4>Musician's Price: ${{ number_format($musician->price, 2) }}</h4>
+                    </div>
+
+                    <form method="POST" action="{{ route('user-events.store') }}" id="bookingForm">
                         @csrf
                         <input type="hidden" name="musician_id" value="{{ $musician->id }}">
 
@@ -101,44 +117,9 @@
 @push('scripts')
 <script>
 document.addEventListener('DOMContentLoaded', function() {
-    const form = document.getElementById('bookingForm');
     const startTimeInput = document.getElementById('start_time');
     const endTimeInput = document.getElementById('end_time');
-
-    form.addEventListener('submit', async function(e) {
-        e.preventDefault();
-
-        try {
-            const response = await fetch(form.action, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
-                },
-                body: JSON.stringify({
-                    musician_id: form.musician_id.value,
-                    name: form.name.value,
-                    date: form.date.value,
-                    start_time: form.start_time.value,
-                    end_time: form.end_time.value,
-                    location: form.location.value,
-                    description: form.description.value
-                })
-            });
-
-            const data = await response.json();
-
-            if (data.success) {
-                alert(data.message);
-                window.location.href = '/dashboard'; // Redirect to dashboard or appropriate page
-            } else {
-                alert(data.message);
-            }
-        } catch (error) {
-            console.error('Error:', error);
-            alert('An error occurred while processing your request.');
-        }
-    });
+    const form = document.getElementById('bookingForm');
 
     // Validate end time is after start time
     endTimeInput.addEventListener('change', function() {
@@ -146,6 +127,33 @@ document.addEventListener('DOMContentLoaded', function() {
             alert('End time must be after start time');
             endTimeInput.value = '';
         }
+    });
+
+    // Handle form submission
+    form.addEventListener('submit', function(e) {
+        e.preventDefault();
+        
+        // Submit the form
+        fetch(form.action, {
+            method: 'POST',
+            body: new FormData(form),
+            headers: {
+                'X-Requested-With': 'XMLHttpRequest'
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                alert('Your booking request has been raised successfully!');
+                window.location.href = data.redirect || '/';
+            } else {
+                alert(data.message || 'An error occurred while submitting your request.');
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('An error occurred while submitting your request.');
+        });
     });
 });
 </script>
