@@ -51,8 +51,8 @@ RUN php artisan view:cache
 COPY docker/start.sh /usr/local/bin/start.sh
 RUN chmod +x /usr/local/bin/start.sh
 
-# Expose port 80
-EXPOSE 80
+# Expose port (will be overridden by PORT env var)
+EXPOSE ${PORT:-80}
 
 # Start Apache with our startup script
 CMD ["/usr/local/bin/start.sh"] 
