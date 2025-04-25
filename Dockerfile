@@ -1,4 +1,4 @@
-FROM php:8.2-apache
+FROM php:8.2-cli
 
 # Install system dependencies
 RUN apt-get update && apt-get install -y \
@@ -35,12 +35,6 @@ RUN npm run build
 # Set permissions
 RUN chown -R www-data:www-data /var/www/storage /var/www/bootstrap/cache
 
-# Enable Apache modules
-RUN a2enmod rewrite
-
-# Configure Apache
-COPY docker/000-default.conf /etc/apache2/sites-available/000-default.conf
-
 # Create storage link and run migrations
 RUN php artisan storage:link
 RUN php artisan config:cache
@@ -52,7 +46,7 @@ COPY docker/start.sh /usr/local/bin/start.sh
 RUN chmod +x /usr/local/bin/start.sh
 
 # Expose port (will be overridden by PORT env var)
-EXPOSE ${PORT:-80}
+EXPOSE ${PORT:-8000}
 
-# Start Apache with our startup script
+# Start the application
 CMD ["/usr/local/bin/start.sh"] 
