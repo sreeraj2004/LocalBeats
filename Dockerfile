@@ -41,8 +41,18 @@ RUN a2enmod rewrite
 # Configure Apache
 COPY docker/000-default.conf /etc/apache2/sites-available/000-default.conf
 
+# Create storage link and run migrations
+RUN php artisan storage:link
+RUN php artisan config:cache
+RUN php artisan route:cache
+RUN php artisan view:cache
+
+# Create a startup script
+COPY docker/start.sh /usr/local/bin/start.sh
+RUN chmod +x /usr/local/bin/start.sh
+
 # Expose port 80
 EXPOSE 80
 
-# Start Apache
-CMD ["apache2-ctl", "-D", "FOREGROUND"] 
+# Start Apache with our startup script
+CMD ["/usr/local/bin/start.sh"] 
